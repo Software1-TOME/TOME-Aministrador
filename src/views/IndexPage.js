@@ -12,9 +12,9 @@ class IndexPage extends Component {
 
         return (
             < >
-                <h1>Pagina de inicio</h1>
+                <p>Pagina de inicio</p>
                 <Link to="/inicio">
-                    <img src={loginMeme} alt="Login Meme" />
+                    <img  he src={loginMeme} alt="Login Meme" width="auto" height="600px"/>
                 </Link>
                 
             </>
