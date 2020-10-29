@@ -1,0 +1,54 @@
+/*
+  =========Sider=========
+*/
+  .menuLateral{
+    min-height: 100vh;
+  }
+  .ant-layout-sider{
+    background: #EDEEF0!important;
+  } 
+
+  /*
+    =========Logo=========
+  */
+    .textoLogo{
+      margin: 0;
+    }
+    .logo {
+      height: 200px;
+      background: #2282B4;
+      text-align: center;
+    } 
+
+  /*
+    =========Menu=========
+  */
+    .ant-menu{
+      background: #EDEEF0!important ;
+    }
+    .ant-menu-sub{
+      background-color: #F7F7F8 !important;
+    }
+
+/*
+  =========Header=========
+*/
+.ant-layout-header{
+  width: 100% !important;
+  height: 120px !important ;
+  background: rgba(10,68,91) !important;
+  background: radial-gradient(circle, rgba(10,68,91,1) 0%, rgba(5,36,52,1) 60%) !important;
+}
+
+
+/*
+    =========Others=========
+*/
+.site-layout-sub-header-background {
+  background: #fff;
+}
+
+.site-layout-background {
+  background: #fff;
+}
+
