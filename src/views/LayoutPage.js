@@ -1,9 +1,14 @@
 import React, { Component } from "react";
-import { Layout, Menu, Avatar, Row, Col,Image  } from 'antd';
-import { UploadOutlined, UserOutlined, VideoCameraOutlined, MailOutlined } from '@ant-design/icons';
+import { Switch, Route, Link } from "react-router-dom";
+import { Layout, Menu, Avatar, Row, Col } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import tomeLogoB from "../img/tome-logo-blanco.png";
+import AdmCuentas from "../components/cuentas/AdmCuentas";
+import Administrador from "../components/cuentas/Administrador";
+import Proveedor from "../components/cuentas/Proveedor";
+import Solicitante from "../components/cuentas/Solicitante";
 import "./LayoutPage.css";
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
 class LayoutPage extends Component {
     constructor(props) {
@@ -13,7 +18,6 @@ class LayoutPage extends Component {
     }
 
     render() {
-
         return (
             <Layout>
                 <Sider
@@ -28,7 +32,6 @@ class LayoutPage extends Component {
                         console.log(collapsed, type);
                     }}
                 >
-
                     <Row className="logo" justify="center" align="middle">
                         <Col>
                             <Avatar size={75} icon={<UserOutlined />} />
@@ -38,16 +41,27 @@ class LayoutPage extends Component {
                     </Row>
                     <Menu theme="light" mode="inline" defaultSelectedKeys={['4']}>
                         <SubMenu key="sub1" title="CUENTAS">
-                            <Menu.Item key="1">Habilitar/inhabilitar cuentas</Menu.Item>
-                            <Menu.Item key="2">Proveedor</Menu.Item>
-                            <Menu.Item key="3">Solicitante</Menu.Item>
-                            <Menu.Item key="4">Administrador</Menu.Item>
+                            <Menu.Item key="1">
+                                Habilitar/inhabilitar cuentas
+                                <Link to={`${this.props.match.path}/administrar-cuentas/`} />
+                            </Menu.Item>
+                            <Menu.Item key="2">
+                                Proveedor
+                                <Link to={`${this.props.match.path}/proveedor/`} />
+                            </Menu.Item>
+                            <Menu.Item key="3">
+                                Solicitante
+                                <Link to={`${this.props.match.path}/solicitante/`} />
+                            </Menu.Item>
+                            <Menu.Item key="4">
+                                Administrador
+                                <Link to={`${this.props.match.path}/administrador/`} />
+                            </Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub2" title="SERVICIOS">
                             <Menu.Item key="5">Categorías</Menu.Item>
                             <Menu.Item key="6">Sub-categorías</Menu.Item>
                         </SubMenu>
-
                         <SubMenu key="sub3" title="PAGOS">
                             <Menu.Item key="7">Categorías</Menu.Item>
                         </SubMenu>
@@ -64,28 +78,33 @@ class LayoutPage extends Component {
                             <Menu.Item key="7">Categorías</Menu.Item>
                         </SubMenu>
                     </Menu>
-
                 </Sider>
-
                 <Layout>
                     <Header className="site-layout-sub-header-background" style={{ padding: 0 }}>
-                       <Row justify="space-between" align="middle" style={{height:"100%", width:"100%",paddingLeft:"3%",paddingRight:"3%"}}>
-                           <Col>
-                                <img height="80px" width="auto" src={tomeLogoB} />
-                           </Col>
-                           <Col>
-                                Cerrar Sesión
-                           </Col>
-                       </Row>
-                    </Header>  
+                        <Row justify="space-between" align="middle" style={{ height: "100%", width: "100%", paddingLeft: "3%", paddingRight: "3%" }}>
+                            <Col>
+                                <Link to={`${this.props.match.path}/`}>
+                                    <img height="80px" width="auto" src={tomeLogoB} alt="Logo TOME" />
+                                </Link>
+                            </Col>
+                            <Col>
+                                <Link to={`/`}>
+                                    Cerrar Sesión
+                                </Link>
+                            </Col>
+                        </Row>
+                    </Header>
                     <Content >
                         <div className="site-layout-background" style={{ padding: 24, minHeight: "100%" }}>
-                            content
+                            <Switch>
+                                <Route path={`${this.props.match.path}/administrar-cuentas/`} component={AdmCuentas} exact />
+                                <Route path={`${this.props.match.path}/proveedor/`} component={Proveedor} exact />
+                                <Route path={`${this.props.match.path}/solicitante/`} component={Solicitante} exact />
+                                <Route path={`${this.props.match.path}/administrador/`} component={Administrador} exact />
+                            </Switch>
                         </div>
                     </Content>
-                   
                 </Layout>
-
             </Layout>
         );
     }
