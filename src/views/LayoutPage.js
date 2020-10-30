@@ -7,6 +7,8 @@ import AdmCuentas from "../components/cuentas/admcuentas/AdmCuentas";
 import Administrador from "../components/cuentas/administrador/Administrador";
 import Proveedor from "../components/cuentas/proveedor/Proveedor";
 import Solicitante from "../components/cuentas/solicitante/Solicitante";
+import Categorias from "../components/servicios/categorias/Categorias";
+import SubCategorias from "../components/servicios/sub-categorias/SubCategoria";
 import "./LayoutPage.css";
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -35,7 +37,7 @@ class LayoutPage extends Component {
                     <Row className="logo" justify="center" align="middle">
                         <Col>
                             <Avatar size={75} icon={<UserOutlined />} />
-                            <p className="textoLogo">axell@piogram.com</p>
+                            <p className="textoCorreoLogo">axell@piogram.com</p>
                             <p className="textoLogo">Lorem Ipsum</p>
                         </Col>
                     </Row>
@@ -59,8 +61,14 @@ class LayoutPage extends Component {
                             </Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub2" title="SERVICIOS">
-                            <Menu.Item key="5">Categorías</Menu.Item>
-                            <Menu.Item key="6">Sub-categorías</Menu.Item>
+                            <Menu.Item key="5">
+                                Categorías
+                                <Link to={`${this.props.match.path}/categorias/`} />
+                            </Menu.Item>
+                            <Menu.Item key="6">
+                                Sub-categorías
+                                <Link to={`${this.props.match.path}/sub-categorias/`} />
+                            </Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub3" title="PAGOS">
                             <Menu.Item key="7">Categorías</Menu.Item>
@@ -101,6 +109,8 @@ class LayoutPage extends Component {
                                 <Route path={`${this.props.match.path}/proveedor/`} component={Proveedor} exact />
                                 <Route path={`${this.props.match.path}/solicitante/`} component={Solicitante} exact />
                                 <Route path={`${this.props.match.path}/administrador/`} component={Administrador} exact />
+                                <Route path={`${this.props.match.path}/categorias/`} component={Categorias} exact />
+                                <Route path={`${this.props.match.path}/sub-categorias/`} component={SubCategorias} exact />
                             </Switch>
                         </div>
                     </Content>
