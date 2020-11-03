@@ -8,6 +8,8 @@ class Solicitantes extends Component {
         this.state = {
             selectedRowKeys: [], // Check here to configure the default column
             data: [],
+            loadingCheck:false,
+            loadingTable:false,
         };
     }
 
@@ -17,6 +19,9 @@ class Solicitantes extends Component {
    
     llenarTabla = () => {
         //llamar axio y llenar
+        this.setState({
+            loadingTable:true
+        })
         MetodosAxios.obtener_solicitantes().then(res => {
             let data = [];
             for (let i = 0; i < res.data.length; i++) {
@@ -28,20 +33,31 @@ class Solicitantes extends Component {
                     correo: solicitante.user_datos.user.email,
                     check: <Switch
                         key={solicitante.id}
+                        loading={this.state.loadingCheck}
                         onChange={(switchValue) => this.onChangeCheck(solicitante.id, switchValue)}
                         defaultChecked={solicitante.estado}
                     />,
                 });
             }
             this.setState({
-                data
+                data:data,
+                loadingTable:false
             })
         })
 
     }
 
-    onChangeCheck = (checked, i) => {
-        console.log(checked, i);
+    onChangeCheck = (i, checked) => {
+        console.log(i,checked);
+        this.setState({
+            loadingCheck:true
+        })
+        MetodosAxios.cambio_solicitante_estado({'estado':checked},i).then(res => {
+            console.log(res)
+        }) 
+        this.setState({
+            loadingCheck:false
+        })
     }
 
     onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -54,6 +70,7 @@ class Solicitantes extends Component {
             < >
                 <div>
                     <Table
+                        loading={this.state.loadingTable}
                         rowSelection={{
                             type: "checkbox",
                             onChange: this.onSelectChange

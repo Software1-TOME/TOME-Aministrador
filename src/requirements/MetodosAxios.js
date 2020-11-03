@@ -16,4 +16,9 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get("/solicitantes/")
   };
 
+  static cambio_solicitante_estado = (estado,id) => {
+    console.log(estado,id)
+    return MetodosAxios.instanceAxios.put(`/solicitante_estado/${id}`,estado)
+  };
+
 }
