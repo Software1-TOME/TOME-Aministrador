@@ -14,7 +14,7 @@ class IndexPage extends Component {
             < >
                 <p>Pagina de inicio</p>
                 <Link to="/inicio">
-                    <img  he src={loginMeme} alt="Login Meme" width="auto" height="600px"/>
+                    <img  src={loginMeme} alt="Login Meme" width="auto" height="600px"/>
                 </Link>
                 
             </>
