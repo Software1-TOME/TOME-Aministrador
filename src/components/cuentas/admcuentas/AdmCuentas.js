@@ -12,6 +12,7 @@ class AdmCuentas extends Component {
         };
     }
 
+
     render() {
 
         return (
