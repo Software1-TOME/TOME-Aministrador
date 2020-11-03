@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Table, Switch } from 'antd';
-
+import MetodosAxios from "../../../../requirements/MetodosAxios"
 
 class Solicitantes extends Component {
     constructor(props) {
@@ -14,32 +14,36 @@ class Solicitantes extends Component {
     componentDidMount() {
         this.llenarTabla();
     }
-
+   
     llenarTabla = () => {
         //llamar axio y llenar
-        let data = [];
-        for (let i = 0; i < 46; i++) {
-            data.push({
-                key: i,
-                nombres: `Axell ${i}`,
-                cedula: "0999999999",
-                correo: `Café@outlook.com`,
-                check: <Switch 
-                            key={i} 
-                            onChange={(switchValue)=>this.onChangeCheck(i,switchValue)} 
-                            defaultChecked={false}
-                        />,
-            });
-        }
-        this.setState({
-            data
+        MetodosAxios.obtener_solicitantes().then(res => {
+            let data = [];
+            for (let i = 0; i < res.data.length; i++) {
+                let solicitante = res.data[i]
+                data.push({
+                    key: solicitante.id,
+                    nombres: solicitante.user_datos.nombres +" "+ solicitante.user_datos.apellidos,
+                    cedula: solicitante.user_datos.cedula,
+                    correo: solicitante.user_datos.user.email,
+                    check: <Switch
+                        key={solicitante.id}
+                        onChange={(switchValue) => this.onChangeCheck(solicitante.id, switchValue)}
+                        defaultChecked={solicitante.estado}
+                    />,
+                });
+            }
+            this.setState({
+                data
+            })
         })
+
     }
 
-    onChangeCheck=(checked,i) =>{
-        console.log(checked,i);
-      }
-      
+    onChangeCheck = (checked, i) => {
+        console.log(checked, i);
+    }
+
     onSelectChange = (selectedRowKeys, selectedRows) => {
         console.log('Rows: ', selectedRows);
         console.log('Keys:', selectedRowKeys);
