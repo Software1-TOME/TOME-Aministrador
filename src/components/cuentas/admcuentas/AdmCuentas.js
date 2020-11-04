@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import { Tabs, Switch, Input } from 'antd';
+import { Tabs, Switch, Input, Button } from 'antd';
 import Administradores from "./tabs/Administradores";
 import Proveedores from "./tabs/Proveedores";
 import Solicitantes from "./tabs/Solicitantes";
 import MetodosAxios from "../../../requirements/MetodosAxios";
+import Eliminar from "../../../img/icons/eliminar.png";
+import Icon from '@ant-design/icons';
 import "./AdmCuentas.css"
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -21,7 +23,7 @@ class AdmCuentas extends Component {
         };
     }
     componentDidMount() {
-        this.llenarTablaSolicitante("");
+         this.llenarTablaSolicitante("");
     }
 
     llenarTablaSolicitante = (search) => {
@@ -49,7 +51,7 @@ class AdmCuentas extends Component {
                             check: <Switch
                                 key={solicitante.id}
                                 loading={this.state.loadingCheck}
-                                onChange={(switchValue) => this.onChangeCheck(solicitante.id, switchValue)}
+                                onChange={(switchValue) => this.onChangeCheckSolicitante(solicitante.id, switchValue)}
                                 defaultChecked={solicitante.estado}
                             />,
                         });
@@ -63,7 +65,7 @@ class AdmCuentas extends Component {
                         check: <Switch
                             key={solicitante.id}
                             loading={this.state.loadingCheck}
-                            onChange={(switchValue) => this.onChangeCheck(solicitante.id, switchValue)}
+                            onChange={(switchValue) => this.onChangeCheckSolicitante(solicitante.id, switchValue)}
                             defaultChecked={solicitante.estado}
                         />,
                     });
@@ -78,8 +80,7 @@ class AdmCuentas extends Component {
         })
     }
 
-    onChangeCheck = (i, checked) => {
-        console.log(i, checked);
+    onChangeCheckSolicitante = (i, checked) => {
         this.setState({
             loadingCheck: true
         })
@@ -111,26 +112,43 @@ class AdmCuentas extends Component {
 
     mostrar = (search) => {
         console.log(search)
-        //console.log(this.state.selectedRowKeysSolicitante, "chao1")
-        //console.log(this.state.selectedRowKeysProveedor, "chao2")
-        //console.log(this.state.selectedRowKeysAdministrador, "chao3")
         this.llenarTablaSolicitante(search);
 
     }
 
+     async eliminar (){
+        console.log("eliminar",this.state.selectedRowKeysSolicitante)
+        if(this.state.selectedRowKeysSolicitante.length>0){
+            for (let i = 0; i < this.state.selectedRowKeysSolicitante.length; i++) {
+                let id=this.state.selectedRowKeysSolicitante[i];
+                  await MetodosAxios.eliminar_solicitante(id).then(res => {
+                    console.log(res)
+                })
+            }
+        }    
+        this.llenarTablaSolicitante("");
+    }
     render() {
 
         return (
             < >
                 <h1>Habilitar/inhabilitar cuentas</h1>
                 <Search
-                    placeholder="input search text"
+                    placeholder="Buscar"
                     allowClear
                     onSearch={this.mostrar}
                     style={{ width: 200, margin: '0 10px' }}
                 />
+                <Button
+                    type="text"
+                    shape="circle"
+                    size="small"
+                    icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
+                    onClick={()=>{this.eliminar()}}
+                />
+
                 <div className="card-container">
-                    <Tabs type="card" size="large">
+                    <Tabs type="card" size="large" >
                         <TabPane tab="SOLICITANTES" key="1">
                             <Solicitantes
                                 onSelectChange={this.onSelectChangeSolicitante}
