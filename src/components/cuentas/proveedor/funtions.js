@@ -81,6 +81,7 @@ export async function get_Pendientes(pendiente, count){
         count: count,
         key: proveedor.id,
         proveedor_id: proveedor.id,
+        pendiente_id: pendiente.id,
         user_datos: proveedor.user_datos.id,
         email: pendiente.email,
         tipo_user: proveedor.user_datos.tipo,

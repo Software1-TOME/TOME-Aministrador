@@ -46,7 +46,7 @@ class Proveedor extends Component {
                             placeholder="Buscar"
                             allowClear
                             onSearch={this.onSearch}
-                            style={{ width: 200, margin: '0 10px', border:'1px solid black'}}
+                            style={{ width: 200, margin: '0 10px'}}
                             className="search-p"
                         />
                     </div>

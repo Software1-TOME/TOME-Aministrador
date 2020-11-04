@@ -24,7 +24,7 @@ thead[class*="ant-table-thead"] th{
 
 
 /**
-* Modal Style
+* Modal Style View datos
 **/
 
 .modal-container{
@@ -94,3 +94,34 @@ thead[class*="ant-table-thead"] th{
     border: 0px;
 }
 
+/**
+* Modal style messages for Post failed or success
+**/
+
+.success-msg{
+    display:block;
+    text-align: center;
+    padding: 10px;
+}
+
+.msg-text{
+    align-self: center;
+    font-weight: bolder;
+    color:#052434;
+    text-align: center;
+}
+
+.msg-detail{
+    align-self: center;
+    color:#052434;
+    text-align: center;
+}
+
+
+.button-request{
+    background-color: #052434;
+    color: white;
+    font-weight: bolder;
+    padding: 5px;
+    width: 100px;
+}

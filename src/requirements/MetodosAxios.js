@@ -49,12 +49,16 @@ export default class MetodosAxios {
   }
 
   static register_proveedor(data){
-    let url = 'register_proveedor'
+    let url = '/register_proveedor/'
     return MetodosAxios.instanceAxios.post(url, data)
   }
 
   static obtener_profesiones(user){
     return MetodosAxios.instanceAxios.get(`/proveedor_profesiones/${user}`)
+  }
+
+  static enviar_email(data){
+    return MetodosAxios.instanceAxios.post('/email/', data)
   }
 
 }

@@ -4,17 +4,17 @@ import MetodosAxios from "../../../../requirements/MetodosAxios"
 import { get_Pendientes } from '../funtions';
 import aceptar from '../../../../img/aceptar.png'
 import rechazar from '../../../../img/rechazar.png'
-import style from  './pendientes.css'
+import style from './pendientes.css'
 
 
 
 
 const columns = [
-    {title:'', dataIndex: 'count', className: 'columns-pendientes-1'},
+    { title: '', dataIndex: 'count', className: 'columns-pendientes-1' },
     { title: 'Nombre', dataIndex: 'nombre', className: 'columns-pendientes' },
     { title: 'Profesión', dataIndex: 'profesion', className: 'columns-pendientes' },
     { title: 'Correo Electrónico', dataIndex: 'email', className: 'columns-pendientes' },
-    { title: 'Fecha de registro', dataIndex: 'fecha_creacion',  className: 'columns-pendientes'},];
+    { title: 'Fecha de registro', dataIndex: 'fecha_creacion', className: 'columns-pendientes' },];
 
 class Pendientes extends Component {
     constructor(props) {
@@ -26,6 +26,10 @@ class Pendientes extends Component {
             selected: {},
             created: false,
             failed: false,
+            show: false,
+            sent: false,
+            creado: {},
+            success: false,
         };
     }
 
@@ -34,46 +38,67 @@ class Pendientes extends Component {
         this.load_Pendientes();
     }
 
-    onSelectChange = selectedRowKeys => {
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
-        this.setState({ selectedRowKeys });
-    };
+
 
     async load_Pendientes() {
         let pendientes = []
         let value = await MetodosAxios.obtener_proveedores_pendientes();
-        let count=1;
+        let count = 1;
         for (let pendiente of value.data) {
             let _pendiente = await get_Pendientes(pendiente, count)
             pendientes.push(_pendiente);
             count++;
         }
-        console.log(pendientes)
+
         this.setState({
             pendientes
         })
     }
 
     showInfoPendiente(user) {
-        console.log(user)
         this.setState({ selected: user })
-        console.log(this.state.selected)
-        this.setState({ created: true })
+        this.setState({ show: true })
     };
 
-    handleOk = e => {
-        console.log(e);
-        this.setState({
-            created: false,
-        });
+    handleOk = (e) => {
+
+        let data = {
+            tipo: 'Proveedor',
+            email: this.state.selected.email,
+            user_datos: this.state.selected.user_datos,
+            proveedor: this.state.selected.proveedor_id,
+            pendiente: this.state.selected.pendiente_id,
+            profesion: this.state.selected.profesion,
+            experiencia: this.state.selected.ano_experiencia,
+        }
+        MetodosAxios.register_proveedor(data).then( value=>{
+            let datos= value.data;
+            if(datos.success){
+                this.setState({created: true, show: false})
+                let creado={
+                    password: datos.password,
+                    email: datos.username
+                }
+                this.setState({creado})
+            }else{
+                this.setState({failed: true, show: false})
+            }
+        })
     };
 
     handleCancel = e => {
         console.log(e);
         this.setState({
+            show: false,
             created: false,
+            failed: false,
+            sent: false,
         });
     };
+
+    handleSendEmail(){
+
+    }
 
     getDocuments() {
         if (this.state.selected.document) {
@@ -94,12 +119,6 @@ class Pendientes extends Component {
     }
 
     render() {
-        const { selectedRowKeys } = this.state;
-        const rowSelection = {
-            selectedRowKeys,
-            onChange: this.onSelectChange,
-        };
-        const hasSelected = selectedRowKeys.length > 0;
         return (
             <div className="container-pendientes">
 
@@ -110,24 +129,24 @@ class Pendientes extends Component {
                         }
                     }
                 }}
-                
+
                     columns={columns} dataSource={this.state.pendientes} >
-                    
+
                 </Table>
-                { this.state.created &&
+                { this.state.show &&
                     <Modal
-                        visible={this.state.created}
+                        visible={this.state.show}
                         onOk={this.handleOk}
                         width={720}
                         onCancel={this.handleCancel}
                         footer={[
                             <div className="footer">
-                                <Button key="accept" onClick={this.handleCancel} className="button-modal" ghost={true}>
+                                <Button key="accept" onClick={this.handleOk} className="button-modal" ghost={true}>
                                     <img className="icon" src={aceptar}></img>
-                        </Button>
-                                <Button key="cancel" onClick={this.handleOk} ghost={true}>
-                                    <img className="icon" src={rechazar}/>
-                        </Button>
+                                </Button>
+                                <Button key="cancel" onClick={this.handleCancel} ghost={true}>
+                                    <img className="icon" src={rechazar} />
+                                </Button>
                             </div>
 
                         ]}
@@ -178,6 +197,57 @@ class Pendientes extends Component {
 
                     </Modal>
                 }
+                <Modal
+                    visible={this.state.created}
+                    width={520}
+                    footer={[
+                        <div className="footer">
+                            <Button key="accept" onClick={this.handleCancel} className="button-request" 
+                            style={{background: '##052434'}} size="large">
+                                Aceptar
+                            </Button>
+                        </div>
+                    ]}>
+                    <div className="msg-container">
+                        <div className="success-msg">
+                            <h3 className="msg-text">El usuario se ha creado con exito</h3>
+                        </div>
+                        <div className="detail">
+                            <h3 className="msg-detail">Se enviará el correo al proveedor con sus credenciales</h3>
+                        </div>
+                    </div>
+                </Modal>
+
+                <Modal
+                    visible={this.state.failed}
+                    width={350}
+                    onCancel={this.handleCancel}
+                    footer={[
+                        <div className="footer">
+                            <Button key="accept" onClick={this.handleCancel} className="button-request">
+                                Aceptar
+                            </Button>
+                        </div>
+                    ]}>
+                    <div className="msg-container">
+                        <h3 className="msg-text">No se pudo crear el usuario</h3>
+                    </div>
+                </Modal>
+                <Modal
+                    visible={this.state.sent}
+                    width={350}
+                    onCancel={this.handleCancel}
+                    footer={[
+                        <div className="footer">
+                            <Button key="accept" onClick={this.handleCancel} className="button-request">
+                                Aceptar
+                            </Button>
+                        </div>
+                    ]}>
+                    <div className="msg-container">
+                        <h3 className="msg-text">Se ha enviado el email al proveedor</h3>
+                    </div>
+                </Modal>
             </div>
         )
     }
