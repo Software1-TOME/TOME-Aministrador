@@ -225,22 +225,25 @@ class AdmCuentas extends Component {
         return (
             < >
                 <h1>Habilitar/inhabilitar cuentas</h1>
-                <Search
-                    placeholder="Buscar"
-                    allowClear
-                    onSearch={this.searchUser}
-                    style={{ width: 200, margin: '0 10px' }}
-                />
-                <Button
-                    type="text"
-                    shape="circle"
-                    size="small"
-                    icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
-                    onClick={() => { this.eliminar() }}
-                />
+
 
                 <div className="card-container">
-                    <Tabs type="card" size="large" >
+                    <Tabs tabBarExtraContent={<div>
+                        <Search
+                            placeholder="Buscar"
+                            allowClear
+                            onSearch={this.searchUser}
+                            style={{ width: 200, margin: '0 10px' }}
+                        />
+                        <Button
+                            type="text"
+                            shape="circle"
+                            size="small"
+                            icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
+                            onClick={() => { this.eliminar() }}
+                        />
+                    </div>}
+                        type="card" size="large" >
                         <TabPane tab="SOLICITANTES" key="1">
                             <Solicitantes
                                 onSelectChange={this.onSelectChangeSolicitante}
