@@ -39,11 +39,7 @@ class Proveedores extends Component {
         console.log(checked,i);
       }
       
-    onSelectChange = (selectedRowKeys, selectedRows) => {
-        console.log('Rows: ', selectedRows);
-        console.log('Keys:', selectedRowKeys);
-        this.setState({ selectedRowKeys });
-    };
+
     render() {
         return (
             < >
@@ -51,7 +47,7 @@ class Proveedores extends Component {
                 <Table
                     rowSelection={{
                         type: "checkbox",
-                        onChange: this.onSelectChange
+                        onChange: this.props.onSelectChange
                     }}
                     columns={[
                         {

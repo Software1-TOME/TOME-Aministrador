@@ -15,6 +15,7 @@ class IndexPage extends Component {
         return (
             < >
                 <Link to="/inicio">
+
                     <div className="container">
                         <div className="background">
                             <img className="background-img" he src={admin} alt="Login Meme" />
@@ -29,6 +30,7 @@ class IndexPage extends Component {
                         </div>
 
                     </div>
+
 
                 </Link>
 

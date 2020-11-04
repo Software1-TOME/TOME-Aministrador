@@ -74,16 +74,16 @@ class LayoutPage extends Component {
                             <Menu.Item key="7">Categorías</Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub4" title="PUBLICIDAD">
-                            <Menu.Item key="7">Categorías</Menu.Item>
+                            <Menu.Item key="8">Categorías</Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub5" title="PROMOCIÓN">
-                            <Menu.Item key="7">Categorías</Menu.Item>
+                            <Menu.Item key="9">Categorías</Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub6" title="POLÍTICAS">
-                            <Menu.Item key="7">Categorías</Menu.Item>
+                            <Menu.Item key="10">Categorías</Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub7" title="SUGERENCIAS">
-                            <Menu.Item key="7">Categorías</Menu.Item>
+                            <Menu.Item key="11">Categorías</Menu.Item>
                         </SubMenu>
                     </Menu>
                 </Sider>
