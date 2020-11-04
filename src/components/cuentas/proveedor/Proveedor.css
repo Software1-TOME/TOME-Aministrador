@@ -1,0 +1,40 @@
+.proveedor-title{
+    color:#052434;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bolder;
+    font-size: 25px;
+}
+
+.search-div{
+    width: 210px;
+    border-radius: 25px;
+    border: 1px solid #ededed;
+}
+
+.search-div:hover{
+    border: 0px;
+}
+.search-div:hover{
+    border: 0px;
+}
+
+[class*="ant-input"]{
+    border: 1px solid transparent!important;
+    border-top-left-radius: 15px !important;
+    border-bottom-left-radius: 15px !important;    
+  }
+
+
+[class*="ant-input-search"]{
+    border: 1px solid  transparent !important;
+    border-top-right-radius: 15px !important;
+    border-bottom-right-radius: 15px !important;
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    background-color: transparent;
+    box-shadow: transparent;
+    padding: 0px;
+}
+
+
+
