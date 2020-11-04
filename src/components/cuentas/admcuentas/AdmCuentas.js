@@ -88,11 +88,11 @@ class AdmCuentas extends Component {
         })
     }
 
-    onChangeCheckSolicitante = (i, checked) => {
+    async onChangeCheckSolicitante(i, checked){
         this.setState({
             loadingCheck: true
         })
-        MetodosAxios.cambio_solicitante_estado({ 'estado': checked }, i).then(res => {
+        await MetodosAxios.cambio_solicitante_estado({ 'estado': checked }, i).then(res => {
             console.log(res)
         })
         this.setState({
