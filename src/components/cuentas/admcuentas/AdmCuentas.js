@@ -18,12 +18,14 @@ class AdmCuentas extends Component {
             selectedRowKeysProveedor: [],
             selectedRowKeysAdministrador: [],
             data_solicitante: [],
+            data_proveedor: [],
             loadingTable: false,
             loadingCheck: false,
         };
     }
     componentDidMount() {
-         this.llenarTablaSolicitante("");
+        this.llenarTablaSolicitante("");
+        this.llenarTablaProveedor("");
     }
 
     llenarTablaSolicitante = (search) => {
@@ -39,7 +41,7 @@ class AdmCuentas extends Component {
 
                 if (search !== "") {
                     search = search.toLowerCase()
-                    let nombre = solicitante.user_datos.nombres + " " + solicitante.user_datos.apellidos.toLowerCase();
+                    let nombre = solicitante.user_datos.nombres.toLowerCase() + " " + solicitante.user_datos.apellidos.toLowerCase();
                     let cedula = solicitante.user_datos.cedula.toLowerCase();
                     let correo = solicitante.user_datos.user.email.toLowerCase();
                     if (nombre.search(search) !== -1 || cedula.search(search) !== -1 || correo.search(search) !== -1) {
@@ -80,6 +82,60 @@ class AdmCuentas extends Component {
         })
     }
 
+    llenarTablaProveedor = (search) => {
+        this.setState({
+            loadingTable: true
+        })
+        MetodosAxios.obtener_proveedores().then(res => {
+            let data_proveedor = [];
+            for (let i = 0; i < res.data.length; i++) {
+
+
+                let proveedor = res.data[i]
+
+                if (search !== "") {
+                    search = search.toLowerCase()
+                    let nombre = proveedor.user_datos.nombres.toLowerCase() + " " + proveedor.user_datos.apellidos.toLowerCase();
+                    let cedula = proveedor.user_datos.cedula.toLowerCase();
+                    let correo = proveedor.user_datos.user.email.toLowerCase();
+                    if (nombre.search(search) !== -1 || cedula.search(search) !== -1 || correo.search(search) !== -1) {
+                        data_proveedor.push({
+                            key: proveedor.id,
+                            nombres: proveedor.user_datos.nombres + " " + proveedor.user_datos.apellidos,
+                            cedula: proveedor.user_datos.cedula,
+                            correo: proveedor.user_datos.user.email,
+                            check: <Switch
+                                key={proveedor.id}
+                                loading={this.state.loadingCheck}
+                                onChange={(switchValue) => this.onChangeCheckProveedor(proveedor.id, switchValue)}
+                                defaultChecked={proveedor.estado}
+                            />,
+                        });
+                    }
+                } else {
+                    data_proveedor.push({
+                        key: proveedor.id,
+                        nombres: proveedor.user_datos.nombres + " " + proveedor.user_datos.apellidos,
+                        cedula: proveedor.user_datos.cedula,
+                        correo: proveedor.user_datos.user.email,
+                        check: <Switch
+                            key={proveedor.id}
+                            loading={this.state.loadingCheck}
+                            onChange={(switchValue) => this.onChangeCheckProveedor(proveedor.id, switchValue)}
+                            defaultChecked={proveedor.estado}
+                        />,
+                    });
+                }
+
+
+            }
+            this.setState({
+                data_proveedor: data_proveedor,
+                loadingTable: false
+            })
+        })
+    }
+
     onChangeCheckSolicitante = (i, checked) => {
         this.setState({
             loadingCheck: true
@@ -87,6 +143,19 @@ class AdmCuentas extends Component {
         MetodosAxios.cambio_solicitante_estado({ 'estado': checked }, i).then(res => {
             console.log(res)
         })
+        this.setState({
+            loadingCheck: false
+        })
+
+    }
+
+    onChangeCheckProveedor = (i, checked) => {
+        this.setState({
+            loadingCheck: true
+        })
+        /*MetodosAxios.cambio_solicitante_estado({ 'estado': checked }, i).then(res => {
+            console.log(res)
+        })*/
         this.setState({
             loadingCheck: false
         })
@@ -113,19 +182,20 @@ class AdmCuentas extends Component {
     mostrar = (search) => {
         console.log(search)
         this.llenarTablaSolicitante(search);
+        this.llenarTablaProveedor(search);
 
     }
 
-     async eliminar (){
-        console.log("eliminar",this.state.selectedRowKeysSolicitante)
-        if(this.state.selectedRowKeysSolicitante.length>0){
+    async eliminar() {
+        console.log("eliminar", this.state.selectedRowKeysSolicitante)
+        if (this.state.selectedRowKeysSolicitante.length > 0) {
             for (let i = 0; i < this.state.selectedRowKeysSolicitante.length; i++) {
-                let id=this.state.selectedRowKeysSolicitante[i];
-                  await MetodosAxios.eliminar_solicitante(id).then(res => {
+                let id = this.state.selectedRowKeysSolicitante[i];
+                await MetodosAxios.eliminar_solicitante(id).then(res => {
                     console.log(res)
                 })
             }
-        }    
+        }
         this.llenarTablaSolicitante("");
     }
     render() {
@@ -144,7 +214,7 @@ class AdmCuentas extends Component {
                     shape="circle"
                     size="small"
                     icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
-                    onClick={()=>{this.eliminar()}}
+                    onClick={() => { this.eliminar() }}
                 />
 
                 <div className="card-container">
@@ -159,6 +229,8 @@ class AdmCuentas extends Component {
                         <TabPane tab="PROVEEDORES" key="2">
                             <Proveedores
                                 onSelectChange={this.onSelectChangeProveedor}
+                                data_proveedor={this.state.data_proveedor}
+                                loadingTable={this.state.loadingTable}
                             />
                         </TabPane>
                         <TabPane tab="ADMINISTRADORES" key="3">

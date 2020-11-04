@@ -1,5 +1,4 @@
 import axios from "axios";
-import Proveedor from "../components/cuentas/proveedor/Proveedor";
 import {API_URL} from "../Constants";
 
 export default class MetodosAxios {
@@ -32,8 +31,8 @@ export default class MetodosAxios {
     descripccion: Elimina un solicitante
     parametros: int id
   */
-  static async  eliminar_solicitante(id){
-    return  await MetodosAxios.instanceAxios.delete(`/solicitante_delete/${id}`)
+  static eliminar_solicitante(id){
+    return MetodosAxios.instanceAxios.delete(`/solicitante_delete/${id}`)
   };
 
   static obtener_proveedores=()=>{
