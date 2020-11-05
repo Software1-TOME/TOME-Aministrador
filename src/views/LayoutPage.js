@@ -96,14 +96,14 @@ class LayoutPage extends Component {
                                 </Link>
                             </Col>
                             <Col>
-                                <Link to={`/`}>
+                                <Link to={`/`} style={{color:"white"}}>
                                     Cerrar Sesión
                                 </Link>
                             </Col>
                         </Row>
                     </Header>
                     <Content >
-                        <div className="site-layout-background" style={{ padding: 24, minHeight: "100%" }}>
+                        <div className="site-layout-background" style={{ padding: 50, minHeight: "100%" }}>
                             <Switch>
                                 <Route path={`${this.props.match.path}/administrar-cuentas/`} component={AdmCuentas} exact />
                                 <Route path={`${this.props.match.path}/proveedor/`} component={Proveedor} exact />
