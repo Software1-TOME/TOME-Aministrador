@@ -19,9 +19,9 @@ const columns = [
 class Pendientes extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
-            pendientes: this.props.pendientes,
+            pendientes: [],
+            loading_pendientes: false,
             selected: {},
             created: false,
             failed: false,
@@ -30,14 +30,45 @@ class Pendientes extends Component {
             creado: {},
             success: false,
             msg: "",
+            is_changed: false,
         };
     }
 
     componentDidMount() {
-        console.log("Cargando pendientes")
-        if (!this.props.loading) {
-            console.log(this.state.pendientes)
+        this.load_Pendientes()
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(this.state.is_changed!== prevState.is_changed){
+            if(this.state.is_changed){
+                this.load_Pendientes().then(value=>{
+                    console.log(value)
+                })
+                this.setState({is_changed:false})   
+            }
+            
+            
         }
+    }
+
+
+    async load_Pendientes() {
+        this.setState({loading_pendientes: true})
+        let pendientes = []
+        let value = await MetodosAxios.obtener_proveedores_pendientes();
+        let count = 1;
+        for (let pendiente of value.data) {
+            let _pendiente = await get_Pendientes(pendiente, count)
+            pendientes.push(_pendiente);
+            count++;
+        }
+
+        this.setState({
+            pendientes: pendientes,
+            loading_pendientes: false,
+        })
+
+        return value.data;
     }
 
     showInfoPendiente(user) {
@@ -65,7 +96,7 @@ class Pendientes extends Component {
                         password: datos.password,
                         email: datos.username
                     }
-                    this.setState({ creado })
+                    this.setState({ creado: creado, is_changed:true })
                 } else {
                     this.setState({ failed: true, show: false })
                 }
@@ -141,7 +172,7 @@ class Pendientes extends Component {
                         }
                     }
                 }}
-                    loading={this.props.loading}
+                    loading={this.state.loading_pendientes}
                     columns={columns} dataSource={this.state.pendientes} >
 
                 </Table>
