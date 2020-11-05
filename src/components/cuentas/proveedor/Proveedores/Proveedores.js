@@ -17,46 +17,21 @@ class Proveedores extends Component {
         super(props);
         this.state = {
             selectedRowKeys: [], // Check here to configure the default column
-            proveedores: [],
         };
     }
 
     componentDidMount() {
-        this.load_proveedores();
-        //this.load_Pendientes();
-    }
-
-    onSelectChange = selectedRowKeys => {
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
-        this.setState({ selectedRowKeys });
-    };
-
-    async load_proveedores() {
-        let proveedores = []
-        let value = await MetodosAxios.obtener_proveedores();
-        let data = value.data
-        let count =1;
-        for (let proveedor of data) {
-            let element = await getProveedor(proveedor, count)
-            proveedores.push(element)
-            count++;
-        }
-        this.setState({ proveedores })
-        console.log(proveedores)
     }
 
 
 
     render() {
-        const { selectedRowKeys } = this.state;
-        const rowSelection = {
-            selectedRowKeys,
-            onChange: this.onSelectChange,
-        };
-        const hasSelected = selectedRowKeys.length > 0;
+        
         return (
             <div>
-                <Table  columns={columns} dataSource={this.state.proveedores} />
+                <Table  columns={columns}
+                loading={this.props.loading} 
+                dataSource={this.props.proveedores} />
            
             </div>
         )

@@ -21,8 +21,7 @@ class Pendientes extends Component {
         super(props);
 
         this.state = {
-            selectedRowKeys: [], // Check here to configure the default column
-            pendientes: [],
+            pendientes: this.props.pendientes,
             selected: {},
             created: false,
             failed: false,
@@ -30,60 +29,50 @@ class Pendientes extends Component {
             sent: false,
             creado: {},
             success: false,
+            msg: "",
         };
     }
 
     componentDidMount() {
-        //this.load_proveedores();
-        this.load_Pendientes();
-    }
-
-
-
-    async load_Pendientes() {
-        let pendientes = []
-        let value = await MetodosAxios.obtener_proveedores_pendientes();
-        let count = 1;
-        for (let pendiente of value.data) {
-            let _pendiente = await get_Pendientes(pendiente, count)
-            pendientes.push(_pendiente);
-            count++;
+        console.log("Cargando pendientes")
+        if (!this.props.loading) {
+            console.log(this.state.pendientes)
         }
-
-        this.setState({
-            pendientes
-        })
     }
 
     showInfoPendiente(user) {
         this.setState({ selected: user })
         this.setState({ show: true })
+        console.log(this.state.selected)
     };
 
     handleOk = (e) => {
-
-        let data = {
-            tipo: 'Proveedor',
-            email: this.state.selected.email,
-            user_datos: this.state.selected.user_datos,
-            proveedor: this.state.selected.proveedor_id,
-            pendiente: this.state.selected.pendiente_id,
-            profesion: this.state.selected.profesion,
-            experiencia: this.state.selected.ano_experiencia,
-        }
-        MetodosAxios.register_proveedor(data).then( value=>{
-            let datos= value.data;
-            if(datos.success){
-                this.setState({created: true, show: false})
-                let creado={
-                    password: datos.password,
-                    email: datos.username
-                }
-                this.setState({creado})
-            }else{
-                this.setState({failed: true, show: false})
+        try {
+            let data = {
+                tipo: 'Proveedor',
+                email: this.state.selected.email,
+                user_datos: this.state.selected.user_datos,
+                proveedor: this.state.selected.proveedor_id,
+                pendiente: this.state.selected.pendiente_id,
+                profesion: this.state.selected.profesion,
+                experiencia: this.state.selected.ano_experiencia,
             }
-        })
+            MetodosAxios.register_proveedor(data).then(value => {
+                let datos = value.data;
+                if (datos.success) {
+                    this.setState({ created: true, show: false })
+                    let creado = {
+                        password: datos.password,
+                        email: datos.username
+                    }
+                    this.setState({ creado })
+                } else {
+                    this.setState({ failed: true, show: false })
+                }
+            })
+        } catch (e) {
+            this.setState({ failed: true, show: false })
+        }
     };
 
     handleCancel = e => {
@@ -96,7 +85,22 @@ class Pendientes extends Component {
         });
     };
 
-    handleSendEmail(){
+    handleSendEmail = (e) => {
+        console.log(this.state.creado)
+        try {
+            MetodosAxios.enviar_email(this.state.creado).then(value => {
+                let data = value.data;
+                this.setState({ created: false })
+                if (data.success) {
+                    this.setState({ msg: "El email ha sido enviado!" })
+                } else {
+                    this.setState({ msg: "No se pudo enviar el correo" })
+                }
+                this.setState({ sent: true })
+            })
+        } catch (e) {
+            this.setState({ msg: "No se pudo enviar el correo", sent: true })
+        }
 
     }
 
@@ -118,6 +122,14 @@ class Pendientes extends Component {
         }
     }
 
+    getCuenta(user, variable) {
+        if (!user) return ""
+        if (!user.cuentas) return ""
+        if (user.cuentas.length > 0) return user.cuentas[0][variable]
+        else return " "
+    }
+
+
     render() {
         return (
             <div className="container-pendientes">
@@ -129,32 +141,33 @@ class Pendientes extends Component {
                         }
                     }
                 }}
-
+                    loading={this.props.loading}
                     columns={columns} dataSource={this.state.pendientes} >
 
                 </Table>
-                { this.state.show &&
-                    <Modal
-                        visible={this.state.show}
-                        onOk={this.handleOk}
-                        width={720}
-                        onCancel={this.handleCancel}
-                        footer={[
-                            <div className="footer">
-                                <Button key="accept" onClick={this.handleOk} className="button-modal" ghost={true}>
-                                    <img className="icon" src={aceptar}></img>
-                                </Button>
-                                <Button key="cancel" onClick={this.handleCancel} ghost={true}>
-                                    <img className="icon" src={rechazar} />
-                                </Button>
-                            </div>
 
-                        ]}
-                    >
-                        <div className="modal-container">
-                            <h3 className="title">Perfil de proveedor pendiente</h3>
-                            <div>
-                                <table className="table">
+                <Modal
+                    visible={this.state.show}
+                    onOk={this.handleOk}
+                    width={720}
+                    onCancel={this.handleCancel}
+                    footer={[
+                        <div className="footer">
+                            <Button key="accept" onClick={this.handleOk} className="button-modal" ghost={true}>
+                                <img className="icon" src={aceptar}></img>
+                            </Button>
+                            <Button key="cancel" onClick={this.handleCancel} ghost={true}>
+                                <img className="icon" src={rechazar} />
+                            </Button>
+                        </div>
+
+                    ]}
+                >
+                    <div className="modal-container">
+                        <h3 className="title">Perfil de proveedor pendiente</h3>
+                        <div>
+                            <table className="table">
+                                <tbody>
                                     <tr className="row">
                                         <th className="column-name">Nombre</th>
                                         <th className="column-data">{this.state.selected.nombre}</th>
@@ -169,14 +182,14 @@ class Pendientes extends Component {
                                     </tr>
                                     <tr className="row">
                                         <td className="column-name-3" rowSpan="3">Cuenta Bancaria</td>
-                                        <td className="column-data">{this.state.selected.cuentas[0].tipo}</td>
+                                        <td className="column-data">{this.getCuenta(this.state.selected, "tipo")} </td>
                                     </tr>
                                     <tr className="row">
-                                        <td className="column-data-3">{this.state.selected.cuentas[0].numero}</td>
+                                        <td className="column-data-3">{this.getCuenta(this.state.selected, "numero")}</td>
                                     </tr>
                                     <tr className="row">
                                         <td className="column-data">
-                                            {this.state.selected.cuentas[0].banco}
+                                            {this.getCuenta(this.state.selected, "banco")}
                                         </td>
                                     </tr>
                                     <tr className="row">
@@ -191,26 +204,27 @@ class Pendientes extends Component {
                                         <th className="column-name">Documentación</th>
                                         <th className="column-data">No hay documentos por mostrar</th>
                                     </tr>
-                                </table>
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
 
-                    </Modal>
-                }
+                </Modal>
+
                 <Modal
                     visible={this.state.created}
                     width={520}
                     footer={[
                         <div className="footer">
-                            <Button key="accept" onClick={this.handleCancel} className="button-request" 
-                            style={{background: '##052434'}} size="large">
+                            <Button key="accept" onClick={this.handleSendEmail} className="button-request"
+                                style={{ background: '##052434' }} size="large">
                                 Aceptar
                             </Button>
                         </div>
                     ]}>
                     <div className="msg-container">
                         <div className="success-msg">
-                            <h3 className="msg-text">El usuario se ha creado con exito</h3>
+                            <h3 className="msg-text">El usuario se ha creado con éxito</h3>
                         </div>
                         <div className="detail">
                             <h3 className="msg-detail">Se enviará el correo al proveedor con sus credenciales</h3>
@@ -245,9 +259,10 @@ class Pendientes extends Component {
                         </div>
                     ]}>
                     <div className="msg-container">
-                        <h3 className="msg-text">Se ha enviado el email al proveedor</h3>
+                        <h3 className="msg-text">{this.state.msg}</h3>
                     </div>
                 </Modal>
+
             </div>
         )
     }
