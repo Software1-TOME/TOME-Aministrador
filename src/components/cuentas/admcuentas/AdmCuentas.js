@@ -224,7 +224,7 @@ class AdmCuentas extends Component {
 
         return (
             < >
-                <h1>Habilitar/inhabilitar cuentas</h1>
+                <h1 className="titulo">Habilitar/inhabilitar cuentas</h1>
 
 
                 <div className="card-container">
