@@ -13,35 +13,16 @@ const { Search } = Input;
 class Proveedor extends Component {
     constructor(props) {
         super(props);
-        this.state = { // Check here to configure the default column
-            loading_pendientes: false,
+        this.state = { 
             loading_proveedores:false,
             proveedores: [],
-            pendientes: [],
         };
     }
 
     componentDidMount() {
-        this.load_Pendientes();
         this.load_proveedores();
     }
 
-    async load_Pendientes() {
-        this.setState({loading_pendientes: true})
-        let pendientes = []
-        let value = await MetodosAxios.obtener_proveedores_pendientes();
-        let count = 1;
-        for (let pendiente of value.data) {
-            let _pendiente = await get_Pendientes(pendiente, count)
-            pendientes.push(_pendiente);
-            count++;
-        }
-
-        this.setState({
-            pendientes: pendientes,
-            loading_pendientes: false,
-        })
-    }
 
     async load_proveedores() {
         this.setState({loading_proveedores: true})
@@ -58,8 +39,6 @@ class Proveedor extends Component {
         console.log(proveedores)
     }
 
-
-    
 
     onSearch = value => {
         console.log(value)
@@ -91,9 +70,7 @@ class Proveedor extends Component {
                                 loading={this.state.loading_proveedores}/>
                             </TabPane>
                             <TabPane tab="Pendientes" key="2">
-                                <Pendientes 
-                                pendientes= {this.state.pendientes}
-                                loading= {this.state.loading_pendientes}/>
+                                <Pendientes/>
                             </TabPane>
                         </Tabs>
                     </div>
