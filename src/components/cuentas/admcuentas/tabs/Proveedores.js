@@ -10,66 +10,37 @@ class Proveedores extends Component {
         };
     }
 
-    componentDidMount() {
-        this.llenarTabla();
-    }
-
-    llenarTabla = () => {
-        //llamar axio y llenar
-        let data = [];
-        for (let i = 0; i < 10; i++) {
-            data.push({
-                key: i,
-                nombres: `Kevin ${i}`,
-                cedula: "0999999999",
-                correo: `Café@outlook.com`,
-                check: <Switch 
-                            key={i} 
-                            onChange={(switchValue)=>this.onChangeCheck(i,switchValue)} 
-                            defaultChecked={false}
-                        />,
-            });
-        }
-        this.setState({
-            data
-        })
-    }
-
-    onChangeCheck=(checked,i) =>{
-        console.log(checked,i);
-      }
-      
-
     render() {
         return (
             < >
-            <div>
-                <Table
-                    rowSelection={{
-                        type: "checkbox",
-                        onChange: this.props.onSelectChange
-                    }}
-                    columns={[
-                        {
-                            title: 'Nombres',
-                            dataIndex: 'nombres',
-                        },
-                        {
-                            title: 'Cédula',
-                            dataIndex: 'cedula',
-                        },
-                        {
-                            title: 'Correo electrónico',
-                            dataIndex: 'correo',
-                        },
-                        {
-                            title: 'Habilitar/inhabiliar',
-                            dataIndex: 'check',
-                        },
-                    ]}
-                    dataSource={this.state.data} />
-            </div>
-        </>
+                <div>
+                    <Table
+                        loading={this.props.loadingTable}
+                        rowSelection={{
+                            type: "checkbox",
+                            onChange: this.props.onSelectChange
+                        }}
+                        columns={[
+                            {
+                                title: 'Nombres',
+                                dataIndex: 'nombres',
+                            },
+                            {
+                                title: 'Cédula',
+                                dataIndex: 'cedula',
+                            },
+                            {
+                                title: 'Correo electrónico',
+                                dataIndex: 'correo',
+                            },
+                            {
+                                title: 'Habilitar/inhabiliar',
+                                dataIndex: 'check',
+                            },
+                        ]}
+                        dataSource={this.props.data_proveedor} />
+                </div>
+            </>
         );
     }
 }
