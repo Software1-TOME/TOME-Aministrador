@@ -21,6 +21,8 @@ class AdmCuentas extends Component {
             data_solicitante: [],
             base_proveedor: [],
             data_proveedor: [],
+            base_administrador: [],
+            data_administrador: [],
             loadingTable: false,
             loadingCheck: false,
         };
@@ -28,6 +30,7 @@ class AdmCuentas extends Component {
     componentDidMount() {
         this.llenarTablaSolicitante();
         this.llenarTablaProveedor();
+        this.llenarTablaAdministrador();
     }
 
     llenarTablaSolicitante = () => {
@@ -88,6 +91,35 @@ class AdmCuentas extends Component {
         })
     }
 
+    llenarTablaAdministrador = () => {
+        this.setState({
+            loadingTable: true
+        })
+        MetodosAxios.obtener_administradores().then(res => {
+            let data_administrador = [];
+            for (let i = 0; i < res.data.length; i++) {
+                let administrador = res.data[i]
+                data_administrador.push({
+                    key: administrador.id,
+                    nombres: administrador.user_datos.nombres + " " + administrador.user_datos.apellidos,
+                    cedula: administrador.user_datos.cedula,
+                    correo: administrador.user_datos.user.email,
+                    check: <Switch
+                        key={administrador.id}
+                        loading={this.state.loadingCheck}
+                        onChange={(switchValue) => this.onChangeCheckAdministrador(administrador.id, switchValue)}
+                        defaultChecked={administrador.estado}
+                    />,
+                });
+            }
+            this.setState({
+                data_administrador: data_administrador,
+                base_administrador: data_administrador,
+                loadingTable: false
+            })
+        })
+    }
+
     async onChangeCheckSolicitante(i, checked){
         this.setState({
             loadingCheck: true
@@ -101,13 +133,26 @@ class AdmCuentas extends Component {
 
     }
 
-    onChangeCheckProveedor = (i, checked) => {
+    async onChangeCheckProveedor(i, checked){
         this.setState({
             loadingCheck: true
         })
-        /*MetodosAxios.cambio_solicitante_estado({ 'estado': checked }, i).then(res => {
+        await MetodosAxios.cambio_proveedor_estado({ 'estado': checked }, i).then(res => {
             console.log(res)
-        })*/
+        })
+        this.setState({
+            loadingCheck: false
+        })
+
+    }
+
+    async onChangeCheckAdministrador(i, checked){
+        this.setState({
+            loadingCheck: true
+        })
+        await MetodosAxios.cambio_administrador_estado({ 'estado': checked }, i).then(res => {
+            console.log(res)
+        })
         this.setState({
             loadingCheck: false
         })
@@ -184,10 +229,37 @@ class AdmCuentas extends Component {
         })
     }
 
+    searchAdministrador = (search) => {
+        this.setState({
+            loadingTable: true
+        })
+        let data_administrador
+        if (search !== "") {
+            data_administrador = [];
+            for (let i = 0; i < this.state.base_administrador.length; i++) {
+                let administrador = this.state.base_administrador[i];
+                search = search.toLowerCase();
+                let nombre = administrador.nombres.toLowerCase();
+                let cedula = (administrador.cedula!==null?administrador.cedula.toLowerCase():"");
+                let correo = administrador.correo.toLowerCase();
+                if (nombre.search(search) !== -1 || cedula.search(search) !== -1 || correo.search(search) !== -1) {
+                    data_administrador.push(administrador);
+                }
+            }
+        } else {
+            data_administrador = this.state.base_administrador;
+        }
+        this.setState({
+            data_administrador: data_administrador,
+            loadingTable: false
+        })
+    }
+
     searchUser = (search) => {
         console.log(search);
         this.searchSolicitante(search);
         this.searchProveedor(search);
+        this.searchAdministrador(search);
     }
 
     async eliminar() {
@@ -204,23 +276,23 @@ class AdmCuentas extends Component {
             for (let i = 0; i < this.state.selectedRowKeysProveedor.length; i++) {
                 let id = this.state.selectedRowKeysProveedor[i];
                 console.log(id)
-                /*await MetodosAxios.eliminar_solicitante(id).then(res => {
+                await MetodosAxios.eliminar_proveedor(id).then(res => {
                     console.log(res)
-                })*/
+                })
             }
         }
         if (this.state.selectedRowKeysAdministrador.length > 0) {
             for (let i = 0; i < this.state.selectedRowKeysAdministrador.length; i++) {
                 let id = this.state.selectedRowKeysAdministrador[i];
                 console.log(id)
-                /*await MetodosAxios.eliminar_solicitante(id).then(res => {
+                await MetodosAxios.eliminar_administrador(id).then(res => {
                     console.log(res)
-                })*/
+                })
             }
         }
         this.llenarTablaSolicitante();
         this.llenarTablaProveedor();
-        //this.llenarTablaAdministrador();
+        this.llenarTablaAdministrador();
     }
     render() {
 
@@ -263,6 +335,8 @@ class AdmCuentas extends Component {
                         <TabPane tab="ADMINISTRADORES" key="3">
                             <Administradores
                                 onSelectChange={this.onSelectChangeAdministrador}
+                                data_administrador={this.state.data_administrador}
+                                loadingTable={this.state.loadingTable}
                             />
                         </TabPane>
                     </Tabs>
