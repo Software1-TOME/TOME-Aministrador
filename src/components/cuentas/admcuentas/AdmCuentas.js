@@ -203,6 +203,7 @@ class AdmCuentas extends Component {
         if (this.state.selectedRowKeysProveedor.length > 0) {
             for (let i = 0; i < this.state.selectedRowKeysProveedor.length; i++) {
                 let id = this.state.selectedRowKeysProveedor[i];
+                console.log(id)
                 /*await MetodosAxios.eliminar_solicitante(id).then(res => {
                     console.log(res)
                 })*/
@@ -211,6 +212,7 @@ class AdmCuentas extends Component {
         if (this.state.selectedRowKeysAdministrador.length > 0) {
             for (let i = 0; i < this.state.selectedRowKeysAdministrador.length; i++) {
                 let id = this.state.selectedRowKeysAdministrador[i];
+                console.log(id)
                 /*await MetodosAxios.eliminar_solicitante(id).then(res => {
                     console.log(res)
                 })*/
