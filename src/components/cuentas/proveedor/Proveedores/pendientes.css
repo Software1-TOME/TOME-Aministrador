@@ -94,6 +94,58 @@ thead[class*="ant-table-thead"] th{
     border: 0px;
 }
 
+/** DOCUMENT SECTION**/
+
+.section-document{
+    display: flex;
+}
+
+.document-container{
+    display: block;
+    margin: 5px;
+    text-align: center;
+}
+.document-link{
+    text-decoration: none;
+    color: #052434;
+}
+.document-link:link{
+    text-decoration: none;
+    color: #052434;
+}
+
+.document-link:visited{
+    text-decoration: none;
+    color: #052434;
+}
+
+.document-link:hover{
+    text-decoration: none;
+    color: #052434;
+}
+
+.document-link:active{
+    text-decoration: none;
+}
+
+
+.button-document{
+    display: block !important;
+    border: 0px !important;
+    align-self: center;
+}
+
+.button-document:hover{
+    border: 0px !important;
+}
+
+
+.document-name{
+    display: block;
+    margin-top: 10px;
+    align-self: center;
+}
+
 /**
 * Modal style messages for Post failed or success
 **/

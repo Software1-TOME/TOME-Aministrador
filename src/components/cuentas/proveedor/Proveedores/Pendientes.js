@@ -5,7 +5,7 @@ import './pendientes.css'
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes-1' },
-    { title: 'Nombre', dataIndex: 'nombre', className: 'columns-pendientes' },
+    { title: 'Nombre', dataIndex: 'fullName', className: 'columns-pendientes' },
     { title: 'Profesión', dataIndex: 'profesion', className: 'columns-pendientes' },
     { title: 'Correo Electrónico', dataIndex: 'email', className: 'columns-pendientes' },
     { title: 'Fecha de registro', dataIndex: 'fecha_creacion', className: 'columns-pendientes' },];

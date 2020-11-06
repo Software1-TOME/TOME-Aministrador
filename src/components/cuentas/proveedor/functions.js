@@ -9,7 +9,7 @@ export async function getProfesiones(username) {
         if (i === (profesiones.length - 1)) _profesiones += _profesion;
         else _profesiones += _profesion + " , "
     }
-    console.log(_profesiones)
+    //console.log(_profesiones)
     return _profesiones;
 }
 
@@ -32,15 +32,20 @@ export async function getCuenta(id_proveedor){
     return accounts;
 }
 
+function getDate(datestr){
+    if(!datestr) return ""
+    let date = new Date(datestr)
+    return date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
+}
+
 export async function  getProveedor(proveedor, count) {
     let _username = proveedor.user_datos.user.email;
     let fullName = proveedor.user_datos.nombres + " " + proveedor.user_datos.apellidos;
-    let date = new Date(proveedor.user_datos.fecha_creacion)
-    let fecha = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
+    let fecha = getDate(proveedor.user_datos.fecha_creacion)
     let licencia = "No"
     proveedor.estado ? licencia = "Sí" : licencia = "No"
     let profesion = await getProfesiones(_username);
-    let accounts = await getCuenta(proveedor.id)
+    //let accounts = await getCuenta(proveedor.id)
     let element = {
         count: count,
         key: proveedor.id,
@@ -61,7 +66,7 @@ export async function  getProveedor(proveedor, count) {
         estado: licencia,
         fecha_creacion: fecha,
         profesion: profesion,
-        cuentas: accounts,
+        //cuentas: accounts,
 
     }
     return element;
@@ -71,12 +76,10 @@ export async function  getProveedor(proveedor, count) {
 
 export async function get_Pendientes(pendiente, count){
     let proveedor = pendiente.proveedor
-    let fullName = proveedor.user_datos.nombres + " " + proveedor.user_datos.apellidos;
-    let date = new Date(proveedor.user_datos.fecha_creacion)
-    let fecha = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
+    let date = getDate(proveedor.user_datos.fecha_creacion)
     let licencia = "No"
     proveedor.estado ? licencia = "Sí" : licencia = "No"
-    let accounts = await getCuenta(proveedor.id)
+    let fullName = proveedor.user_datos.nombres + " " + proveedor.user_datos.apellidos;
     let element={
         count: count,
         key: proveedor.id,
@@ -85,19 +88,25 @@ export async function get_Pendientes(pendiente, count){
         user_datos: proveedor.user_datos.id,
         email: pendiente.email,
         tipo_user: proveedor.user_datos.tipo,
-        nombre: fullName,
+        nombres: proveedor.user_datos.nombres,
+        apellidos: proveedor.user_datos.apellidos,
+        fullName: fullName,
         ciudad: proveedor.user_datos.ciudad,
         cedula: proveedor.user_datos.cedula,
         telefono: proveedor.user_datos.telefono,
         genero: proveedor.user_datos.genero,
         foto: proveedor.user_datos.foto,
         descripcion: proveedor.descripcion,
-        document: proveedor.document,
+        document: proveedor.document,  //lista
         estado: licencia,
-        fecha_creacion: fecha,
+        fecha_creacion: date,
         profesion: pendiente.profesion,
         ano_experiencia: pendiente.ano_experiencia,
-        cuentas: accounts,
+        numero_cuenta: pendiente.numero_cuenta,
+        banco: pendiente.banco,
+        tipo_cuenta: pendiente.tipo_cuenta,
     }
+
+    console.log(element)
     return element
 }

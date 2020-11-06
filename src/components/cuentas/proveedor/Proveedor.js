@@ -2,13 +2,14 @@ import React, { Component, } from "react";
 import { Input, Tabs, Button, Modal } from 'antd';
 import { AudioOutlined } from '@ant-design/icons';
 import MetodosAxios from "../../../requirements/MetodosAxios";
-import { get_Pendientes, getProveedor } from './funtions';
-import Pendientes from "./Pendientes/Pendientes";
+import { get_Pendientes, getProveedor } from './functions';
+import Pendientes from "./Proveedores/Pendientes";
 import './Proveedor.css'
 import Proveedores from "./Proveedores/Proveedores";
 import aceptar from '../../../img/aceptar.png'
 import rechazar from '../../../img/rechazar.png'
 import SelectedContex from '../../../context/SelectedContext'
+import TablePendiente from "./Proveedores/TablePendiente";
 const { TabPane } = Tabs;
 const { Search } = Input;
 
@@ -19,9 +20,12 @@ class Proveedor extends Component {
     constructor(props, context) {
         super(props);
         this.state = {
+            /**VALUES FOR PROVEEDORES */
             loading_proveedores: false,
+            all_proveedores: [],
             proveedores: [],
             /**VALUES FOR PENDIENTES */
+            all_pendientes: [],
             pendientes: [],
             loading_pendientes: false,
             created: false,
@@ -71,6 +75,7 @@ class Proveedor extends Component {
         }
         this.setState({
             pendientes: pendientes,
+            all_pendientes: pendientes,
             loading_pendientes: false,
         })
         return value.data;
@@ -89,6 +94,9 @@ class Proveedor extends Component {
                 profesion: selected.profesion,
                 experiencia: selected.ano_experiencia,
             }
+
+            
+            /** 
             MetodosAxios.register_proveedor(data).then(value => {
                 let datos = value.data;
                 if (datos.success) {
@@ -104,7 +112,7 @@ class Proveedor extends Component {
                     this.setState({ failed: true })
                     setShow(false)
                 }
-            })
+            })**/
         } catch (e) {
             this.setState({ failed: true })
             setShow(false)
@@ -160,13 +168,6 @@ class Proveedor extends Component {
         }
     }
 
-    getCuenta(user, variable) {
-        if (!user) return ""
-        if (!user.cuentas) return ""
-        if (user.cuentas.length > 0) return user.cuentas[0][variable]
-        else return " "
-    }
-
 
 
     async load_proveedores() {
@@ -180,13 +181,74 @@ class Proveedor extends Component {
             proveedores.push(element)
             count++;
         }
-        this.setState({ proveedores: proveedores, loading_proveedores: false })
-        console.log(proveedores)
+        this.setState({
+            proveedores: proveedores,
+            all_proveedores: proveedores,
+            loading_proveedores: false
+        })
+
+
     }
 
 
-    onSearch = value => {
+    onSearch = (value) => {
         console.log(value)
+        this.searchProveedor(value)
+        this.searchPendiente(value)
+    }
+
+    searchProveedor = (value) => {
+        this.setState({
+            loading_proveedores: true
+        })
+        let proveedores = []
+        if (value !== "") {
+            for (let i = 0; i < this.state.all_proveedores.length; i++) {
+                let proveedor = this.state.all_proveedores[i];
+                value = value.toLowerCase();
+                let nombre = proveedor.nombre.toLowerCase();
+                let correo = proveedor.email.toLowerCase();
+                let profesion = proveedor.profesion.toLowerCase();
+                if (nombre.includes(value) || correo.includes(value) || profesion.includes(value)) {
+                    proveedores.push(proveedor)
+                }
+            }
+        }
+        else {
+            proveedores = this.state.all_proveedores
+        }
+        this.setState({
+            proveedores: proveedores,
+            loading_proveedores: false,
+        })
+
+    }
+
+    searchPendiente = (value) => {
+        this.setState({
+            loading_pendientes: true
+        })
+        let pendientes = []
+        if (value !== "") {
+            for (let i = 0; i < this.state.all_pendientes.length; i++) {
+                let pendiente = this.state.all_pendientes[i];
+                value = value.toLowerCase();
+                let nombre = pendiente.fullName.toLowerCase();
+                let correo = pendiente.email.toLowerCase();
+                let profesion = pendiente.profesion.toLowerCase();
+                if (nombre.includes(value) || correo.includes(value) || profesion.includes(value)) {
+                    pendientes.push(pendiente)
+                }
+            }
+        }
+        else {
+            pendientes = this.state.all_pendientes
+        }
+        this.setState({
+            pendientes: pendientes,
+            loading_pendientes: false,
+        })
+
     }
 
     render() {
@@ -197,26 +259,28 @@ class Proveedor extends Component {
             < >
                 <h1 className="proveedor-title">Proveedor</h1>
                 <div>
-                    <div className="search-div">
-                        <Search
-                            placeholder="Buscar"
-                            allowClear
-                            onSearch={this.onSearch}
-                            style={{ width: 200, margin: '0 10px' }}
-                            className="search-p"
-                        />
-                    </div>
+
                     <div style={{ marginBottom: 16 }}>
 
                     </div>
                     <div className="card-container">
-                        <Tabs type="card" size="large">
-                            <TabPane tab="Proveedores" key="1" >
+                        <Tabs type="card" size="large" tabBarExtraContent={
+                            <div className="search-div">
+                                <Search
+                                    placeholder="Buscar"
+                                    allowClear
+                                    onSearch={this.onSearch}
+                                    style={{ width: 200, margin: '0 10px' }}
+                                    className="search-p"
+                                />
+                            </div>
+                        }>
+                            <TabPane tab="PROVEEDORES" key="1" >
                                 <Proveedores
                                     proveedores={this.state.proveedores}
                                     loading={this.state.loading_proveedores} />
                             </TabPane>
-                            <TabPane tab="Pendientes" key="2">
+                            <TabPane tab="PENDIENTES" key="2">
                                 <Pendientes
                                     pendientes={this.state.pendientes}
                                     loading={this.state.loading_pendientes} />
@@ -244,46 +308,7 @@ class Proveedor extends Component {
                             <div className="modal-container">
                                 <h3 className="title">Perfil de proveedor pendiente</h3>
                                 <div>
-                                    <table className="table">
-                                        <tbody>
-                                            <tr className="row" key="1">
-                                                <th className="column-name">Nombre</th>
-                                                <th className="column-data">{selected.nombre}</th>
-                                            </tr>
-                                            <tr className="row" key="2">
-                                                <th className="column-name">Teléfono</th>
-                                                <th className="column-data">{selected.telefono}</th>
-                                            </tr>
-                                            <tr className="row" key="3">
-                                                <th className="column-name">Correo Electrónico</th>
-                                                <th className="column-data">{selected.email}</th>
-                                            </tr>
-                                            <tr className="row" key="4">
-                                                <td className="column-name-3" rowSpan="3">Cuenta Bancaria</td>
-                                                <td className="column-data">{this.getCuenta(selected, "tipo")} </td>
-                                            </tr>
-                                            <tr className="row" key="5">
-                                                <td className="column-data-3">{this.getCuenta(selected, "numero")}</td>
-                                            </tr>
-                                            <tr className="row" key="6">
-                                                <td className="column-data">
-                                                    {this.getCuenta(selected, "banco")}
-                                                </td>
-                                            </tr>
-                                            <tr className="row" key="7">
-                                                <th className="column-name">Licencia</th>
-                                                <th className="column-data">{selected.estado}</th>
-                                            </tr>
-                                            <tr className="row" key="8">
-                                                <th className="column-name">Profesión</th>
-                                                <th className="column-data">{selected.profesion}</th>
-                                            </tr>
-                                            <tr className="row" key="9">
-                                                <th className="column-name">Documentación</th>
-                                                <th className="column-data">No hay documentos por mostrar</th>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <TablePendiente></TablePendiente>
                                 </div>
                             </div>
 
