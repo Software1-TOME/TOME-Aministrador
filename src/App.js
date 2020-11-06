@@ -1,4 +1,4 @@
-import { Switch, Route, BrowserRouter,HashRouter} from "react-router-dom";
+import { Switch, Route,HashRouter} from "react-router-dom";
 import IndexPage from "./views/IndexPage";
 import LayoutPage from "./views/LayoutPage";
 import { SelectedProvider } from './context/SelectedContext'

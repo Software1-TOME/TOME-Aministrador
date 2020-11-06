@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Switch } from 'antd';
+import { Table } from 'antd';
 
 class Proveedores extends Component {
     constructor(props) {
@@ -28,10 +28,12 @@ class Proveedores extends Component {
                             {
                                 title: 'Cédula',
                                 dataIndex: 'cedula',
+                                responsive: ['lg']
                             },
                             {
                                 title: 'Correo electrónico',
                                 dataIndex: 'correo',
+                                responsive: ['lg']
                             },
                             {
                                 title: 'Habilitar/inhabiliar',

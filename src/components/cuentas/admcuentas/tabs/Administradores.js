@@ -61,10 +61,12 @@ class Administradores extends Component {
                         {
                             title: 'Cédula',
                             dataIndex: 'cedula',
+                            responsive: ['lg']
                         },
                         {
                             title: 'Correo electrónico',
                             dataIndex: 'correo',
+                            responsive: ['lg']
                         },
                         {
                             title: 'Habilitar/inhabiliar',
