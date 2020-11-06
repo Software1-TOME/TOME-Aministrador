@@ -143,7 +143,7 @@ class AdmCuentas extends Component {
                 let solicitante = this.state.base_solicitante[i];
                 search = search.toLowerCase();
                 let nombre = solicitante.nombres.toLowerCase();
-                let cedula = solicitante.cedula.toLowerCase();
+                let cedula = (solicitante.cedula!==null?solicitante.cedula.toLowerCase():"");
                 let correo = solicitante.correo.toLowerCase();
                 if (nombre.search(search) !== -1 || cedula.search(search) !== -1 || correo.search(search) !== -1) {
                     data_solicitante.push(solicitante);
@@ -169,7 +169,7 @@ class AdmCuentas extends Component {
                 let proveedor = this.state.base_proveedor[i];
                 search = search.toLowerCase();
                 let nombre = proveedor.nombres.toLowerCase();
-                let cedula = proveedor.cedula.toLowerCase();
+                let cedula = (proveedor.cedula!==null?proveedor.cedula.toLowerCase():"");
                 let correo = proveedor.correo.toLowerCase();
                 if (nombre.search(search) !== -1 || cedula.search(search) !== -1 || correo.search(search) !== -1) {
                     data_proveedor.push(proveedor);
