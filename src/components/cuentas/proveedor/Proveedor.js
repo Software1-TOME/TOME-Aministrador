@@ -1,15 +1,16 @@
 import React, { Component, } from "react";
 import { Input, Tabs, Button, Modal } from 'antd';
-import { AudioOutlined } from '@ant-design/icons';
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import { get_Pendientes, getProveedor } from './functions';
 import Pendientes from "./Proveedores/Pendientes";
+import { EditOutlined } from '@ant-design/icons';
 import './Proveedor.css'
 import Proveedores from "./Proveedores/Proveedores";
 import aceptar from '../../../img/aceptar.png'
 import rechazar from '../../../img/rechazar.png'
 import SelectedContex from '../../../context/SelectedContext'
-import TablePendiente from "./Proveedores/TablePendiente";
+import TableEditPendiente from "./Proveedores/TableEditPendiente";
+import TablePendiente from './Proveedores/TablePendiente';
 const { TabPane } = Tabs;
 const { Search } = Input;
 
@@ -20,6 +21,7 @@ class Proveedor extends Component {
     constructor(props, context) {
         super(props);
         this.state = {
+            previous: {},
             /**VALUES FOR PROVEEDORES */
             loading_proveedores: false,
             all_proveedores: [],
@@ -34,14 +36,14 @@ class Proveedor extends Component {
             creado: {},
             success: false,
             msg: "",
+            error_msg: "",
             is_changed: false,
             contexto: context,
+            confirmEdit: false,
         };
     }
 
     componentDidMount() {
-        //const {show}= this.context
-        console.log(this.context)
         this.load_proveedores();
         this.load_Pendientes();
     }
@@ -66,7 +68,6 @@ class Proveedor extends Component {
         this.setState({ loading_pendientes: true })
         let pendientes = []
         let value = await MetodosAxios.obtener_proveedores_pendientes();
-        console.log(value.data)
         let count = 1;
         for (let pendiente of value.data) {
             let _pendiente = await get_Pendientes(pendiente, count)
@@ -81,57 +82,120 @@ class Proveedor extends Component {
         return value.data;
     }
 
-    handleOk = (e) => {
-        const { selected, setShow } = this.context
+    handleEdit = (e) => {
+
+        const { setShowEdit, setShow } = this.context
+        setShowEdit(true)
+        setShow(false)
+    }
+
+
+
+    handleSaveEdit = (e) => {
+        this.handleOk(true)
+    }
+
+    handleConfirmEdit = (e) => {
+        this.setState({ confirmEdit: true })
+    }
+
+
+    getAllchangedValued(proveedor) {
+        const { nombres, apellidos, telefono,
+            cedula, numero_cuenta, banco,
+            tipo_cuenta, email, profesion } = this.context       
+
+        let data = {
+            proveedor_id: proveedor.proveedor_id,
+            pendiente_id: proveedor.pendiente_id,
+            user_datos: proveedor.user_datos,
+            email: email===""? proveedor.email: email,
+            banco: banco===""? proveedor.banco: banco,
+            tipo_cuenta: tipo_cuenta===""? proveedor.tipo_cuenta : tipo_cuenta,
+            numero_cuenta: numero_cuenta===""? proveedor.numero_cuenta: numero_cuenta,
+            profesion: profesion===""? proveedor.profesion: profesion,
+            ano_experiencia: proveedor.ano_experiencia,
+            is_changed: true,
+            nombres: nombres===""? proveedor.nombres: nombres,
+            apellidos: apellidos===""? proveedor.apellidos: apellidos,
+            telefono: telefono===""? proveedor.telefono: telefono,
+            cedula: cedula===""? proveedor.cedula: cedula,
+            tipo_wanted: 'Proveedor',
+
+        }
+        return data
+
+    }
+
+    handleRegister = (e) => {
+        this.handleOk(false)
+    }
+
+
+
+    handleOk = (bool) => {
+        const { selected, setShow, reset , setEdit} = this.context
+        
         try {
-
-            let data = {
-                tipo: 'Proveedor',
-                email: selected.email,
-                user_datos: selected.user_datos,
-                proveedor: selected.proveedor_id,
-                pendiente: selected.pendiente_id,
-                profesion: selected.profesion,
-                experiencia: selected.ano_experiencia,
-            }
-
-            
-            /** 
-            MetodosAxios.register_proveedor(data).then(value => {
-                let datos = value.data;
-                if (datos.success) {
-                    this.setState({ created: true })
-
-                    setShow(false)
-                    let creado = {
-                        password: datos.password,
-                        email: datos.username
-                    }
-                    this.setState({ creado: creado, is_changed: true })
+            //console.log(selected)
+            if (selected.valid_profesion) {
+                let data = {}
+                if (bool) {
+                    data = this.getAllchangedValued(selected)
                 } else {
-                    this.setState({ failed: true })
-                    setShow(false)
+                    data = selected;
                 }
-            })**/
+                //console.log(data)
+                
+                MetodosAxios.register_proveedor(data).then(value => {
+                    let datos = value.data;
+                    if (datos.success) {
+                        this.setState({ created: true })
+
+                        setShow(false)
+                        setEdit(false)
+                        let creado = {
+                            password: datos.password,
+                            email: datos.username
+                        }
+                        this.setState({ creado: creado, is_changed: true })
+                    } else {
+                        this.setState({ failed: true, error_msg: datos.error })
+                        setShow(false)
+                        console.log(datos.code)
+                    }
+                })
+                reset()
+            } else {
+                this.setState({ failed: true, error_msg: 'La profesion no está registrada' })
+                reset()
+            }
         } catch (e) {
             this.setState({ failed: true })
             setShow(false)
+            reset()
         }
     };
 
     handleCancel = e => {
-        console.log(e);
-        const { setShow } = this.context
+        const { setShow, setShowEdit, setSelected, setEdit, reset } = this.context
+        setShow(false)
+        setShowEdit(false)
+        setSelected({})
+        setEdit({})
+
         this.setState({
             created: false,
             failed: false,
             sent: false,
+            confirmEdit: false,
         });
-        setShow(false)
-    };
+
+        reset()
+    }
+
 
     handleSendEmail = (e) => {
-        console.log(this.state.creado)
         try {
             MetodosAxios.enviar_email(this.state.creado).then(value => {
                 let data = value.data;
@@ -149,25 +213,33 @@ class Proveedor extends Component {
 
     }
 
-    getDocuments() {
-        const { selected } = this.context
-        if (selected.document) {
-            let docs = " "
-            let documents = selected.document;
-            for (let doc of documents) {
-                let desc = doc.descripcion
-                if (!desc) {
-                    docs += desc + "\n"
-                }
-            }
-            if (docs === " ") {
-                return "No hay documentos para presentar"
-            } else {
-                return docs;
+    handleReset=()=>{
+        let buttons = document.getElementsByClassName('ant-btn ant-btn-link')
+        for(let btn of buttons){
+            if(btn.id==="reset-form"){
+                btn.click()
             }
         }
     }
 
+    handleCloseEdit=()=>{
+        this.handleReset()
+        const { setShow, setShowEdit, setSelected, setEdit, reset } = this.context
+        setShow(false)
+        setShowEdit(false)
+        setSelected({})
+        setEdit({})
+
+        this.setState({
+            created: false,
+            failed: false,
+            sent: false,
+            confirmEdit: false,
+        });
+
+        reset()
+
+    }
 
 
     async load_proveedores() {
@@ -192,10 +264,11 @@ class Proveedor extends Component {
 
 
     onSearch = (value) => {
-        console.log(value)
         this.searchProveedor(value)
         this.searchPendiente(value)
     }
+
+
 
     searchProveedor = (value) => {
         this.setState({
@@ -253,34 +326,27 @@ class Proveedor extends Component {
 
     render() {
 
-        const { selected, show } = this.context
+        const { show, showEdit } = this.context
 
         return (
-            < >
+            <div key="proveedor-admin">
                 <h1 className="proveedor-title">Proveedor</h1>
                 <div>
-
-                    <div style={{ marginBottom: 16 }}>
-
-                    </div>
+                    <div style={{ marginBottom: 16 }}></div>
                     <div className="card-container">
                         <Tabs type="card" size="large" tabBarExtraContent={
                             <div className="search-div">
                                 <Search
-                                    placeholder="Buscar"
-                                    allowClear
-                                    onSearch={this.onSearch}
-                                    style={{ width: 200, margin: '0 10px' }}
-                                    className="search-p"
-                                />
-                            </div>
-                        }>
-                            <TabPane tab="PROVEEDORES" key="1" >
+                                    placeholder="Buscar" allowClear
+                                    onSearch={this.onSearch} style={{ width: 200, margin: '0 10px' }}
+                                    className="search-p" />
+                            </div>}>
+                            <TabPane tab="PROVEEDORES" key="proveedores" >
                                 <Proveedores
                                     proveedores={this.state.proveedores}
                                     loading={this.state.loading_proveedores} />
                             </TabPane>
-                            <TabPane tab="PENDIENTES" key="2">
+                            <TabPane tab="PENDIENTES" key="pendientes">
                                 <Pendientes
                                     pendientes={this.state.pendientes}
                                     loading={this.state.loading_pendientes} />
@@ -288,32 +354,94 @@ class Proveedor extends Component {
                         </Tabs>
                     </div>
                     <div>
+                        {/**SHOW DATA */}
                         <Modal
+                            key="modal-data"
                             visible={show}
-                            onOk={this.handleOk}
                             width={720}
                             onCancel={this.handleCancel}
                             footer={[
                                 <div className="footer">
-                                    <Button key="accept" onClick={this.handleOk} className="button-modal" ghost={true}>
-                                        <img className="icon" src={aceptar}></img>
+                                    <Button key="accept" onClick={this.handleRegister} className="button-modal" ghost={true}>
+                                        <img className="icon" src={aceptar} alt="Aceptar"></img>
                                     </Button>
                                     <Button key="cancel" onClick={this.handleCancel} ghost={true}>
-                                        <img className="icon" src={rechazar} />
+                                        <img className="icon" src={rechazar} alt="Rechazar" />
                                     </Button>
                                 </div>
 
                             ]}
                         >
                             <div className="modal-container">
-                                <h3 className="title">Perfil de proveedor pendiente</h3>
+                                <div className="modal-title">
+                                    <h3 className="title">Perfil de proveedor pendiente</h3>
+                                    <Button icon={<EditOutlined />} shape="round"
+                                        className="edit-button" onClick={this.handleEdit}></Button>
+                                </div>
                                 <div>
                                     <TablePendiente></TablePendiente>
                                 </div>
                             </div>
 
                         </Modal>
+                        {/**EDIT DATA */}
                         <Modal
+                            key="modal-edit"
+                            visible={showEdit}
+                            width={720}
+                            onCancel={this.handleCloseEdit}
+                            footer={[
+                                <div className="footer">
+                                    <Button key="accept-edit" onClick={this.handleConfirmEdit} ghost={true} className="button-request">
+                                        <img className="icon" src={aceptar} alt="Aceptar"></img>
+                                    </Button>
+                                    <Button key="cancel-edit" onClick={this.handleCloseEdit} ghost={true} className="button-request">
+                                        <img className="icon" src={rechazar} alt="Rechazar" />
+                                    </Button>
+                                </div>
+
+                            ]}
+                        >
+                            <div className="modal-container">
+                                <div className="modal-title">
+                                    <h3 className="title">Perfil de proveedor pendiente</h3>
+                                </div>
+                                <div>
+                                    <TableEditPendiente></TableEditPendiente>
+                                </div>
+                            </div>
+
+                        </Modal>
+                        {/**CONFIRM VALUES EDITED */}
+                        <Modal
+                            key="modal-confirm-edit"
+                            visible={this.state.confirmEdit}
+                            width={520}
+                            onCancel={this.handleCancel}
+                            footer={[
+                                <div className="footer">
+                                    <Button key="accept-save" onClick={this.handleSaveEdit} className="button-request"
+                                        style={{ background: '#052434' }} size="large">
+                                        Aceptar
+                                    </Button>
+                                    <Button key="cancel-save" onClick={this.handleCancel} className="button-request"
+                                        style={{ background: '#052434' }} size="large">
+                                        Cancelar
+                                    </Button>
+                                </div>
+                            ]}>
+                            <div className="msg-container">
+                                <div className="success-msg">
+                                    <h3 className="msg-text">¿Desea registrar al proveedor?</h3>
+                                </div>
+                                <div className="detail">
+                                    <h3 className="msg-detail">Se registrará al proveedor con los cambios realizados</h3>
+                                </div>
+                            </div>
+                        </Modal>
+                        {/**SUCCESS REGISTER */}
+                        <Modal
+                            key="modal-succes"
                             visible={this.state.created}
                             width={520}
                             footer={[
@@ -333,7 +461,9 @@ class Proveedor extends Component {
                                 </div>
                             </div>
                         </Modal>
+                        {/**FAILED REGISTER */}
                         <Modal
+                            key="modal-failed"
                             visible={this.state.failed}
                             width={350}
                             onCancel={this.handleCancel}
@@ -345,10 +475,17 @@ class Proveedor extends Component {
                                 </div>
                             ]}>
                             <div className="msg-container">
-                                <h3 className="msg-text">No se pudo crear el usuario</h3>
+                                <div className="success-msg">
+                                    <h3 className="msg-text">No se pudo crear el usuario</h3>
+                                </div>
+                                <div className="detail">
+                                    <h3 className="msg-detail">{this.state.error_msg}</h3>
+                                </div>
                             </div>
                         </Modal>
+                        {/**SENT EMAIL*/}
                         <Modal
+                            key="modal-email"
                             visible={this.state.sent}
                             width={350}
                             onCancel={this.handleCancel}
@@ -367,7 +504,7 @@ class Proveedor extends Component {
                     </div>
 
                 </div>
-            </>
+            </div>
         );
     }
 }

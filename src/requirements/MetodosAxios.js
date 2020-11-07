@@ -60,4 +60,8 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.post('/email/', data)
   }
 
+  static obtener_todas_profesiones(){
+    return MetodosAxios.instanceAxios.get('/profesiones/')
+  }
+
 }

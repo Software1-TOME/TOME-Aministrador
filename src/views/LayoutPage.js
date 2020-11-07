@@ -106,7 +106,7 @@ class LayoutPage extends Component {
                         <div className="site-layout-background" style={{ padding: 50, minHeight: "100%" }}>
                             <Switch>
                                 <Route path={`${this.props.match.path}/administrar-cuentas/`} component={AdmCuentas} exact />
-                                <Route path={`${this.props.match.path}/proveedor/`} component={Proveedor} exact />
+                                <Route path={`${this.props.match.path}/proveedor/`} component={Proveedor} exact/>
                                 <Route path={`${this.props.match.path}/solicitante/`} component={Solicitante} exact />
                                 <Route path={`${this.props.match.path}/administrador/`} component={Administrador} exact />
                                 <Route path={`${this.props.match.path}/categorias/`} component={Categorias} exact />

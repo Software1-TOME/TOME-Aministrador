@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Table} from 'antd';
 import SelectedContext from '../../../../context/SelectedContext'
+import {copy} from '../functions'
 import './pendientes.css'
 
 const columns = [
@@ -12,12 +13,13 @@ const columns = [
 
 const Pendientes =(props)=>{
     
-    const {setShow, setSelected, selected}= useContext(SelectedContext)
+    const {setShow, setSelected}= useContext(SelectedContext)
 
-    const showInfo=(user)=>{   
-        setSelected(user)
+    const showInfo=(user)=>{
+        console.log(user.nombres)
+        let copy_user = copy(user)  
+        setSelected(copy_user)
         setShow(true)
-        console.log(selected)
     };
     
         return (
