@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Switch } from 'antd';
+import { Table } from 'antd';
 
 class Administradores extends Component {
     constructor(props) {
@@ -11,69 +11,42 @@ class Administradores extends Component {
     }
 
     componentDidMount() {
-        this.llenarTabla();
+
     }
 
-    llenarTabla = () => {
-        //llamar axio y llenar
-        let data = [];
-        for (let i = 0; i < 5; i++) {
-            data.push({
-                key: i,
-                nombres: `Regatto ${i}`,
-                cedula: "0999999999",
-                correo: `Café@outlook.com`,
-                check: <Switch 
-                            key={i} 
-                            onChange={(switchValue)=>this.onChangeCheck(i,switchValue)} 
-                            defaultChecked={false}
-                        />,
-            });
-        }
-        this.setState({
-            data
-        })
-    }
-
-    onChangeCheck=(checked,i) =>{
-        console.log(checked,i);
-      }
-      
-    onSelectChange = (selectedRowKeys, selectedRows) => {
-        console.log('Rows: ', selectedRows);
-        console.log('Keys:', selectedRowKeys);
-        this.setState({ selectedRowKeys });
-    };
     render() {
         return (
             < >
-            <div>
-                <Table
-                    rowSelection={{
-                        type: "checkbox",
-                        onChange: this.onSelectChange
-                    }}
-                    columns={[
-                        {
-                            title: 'Nombres',
-                            dataIndex: 'nombres',
-                        },
-                        {
-                            title: 'Cédula',
-                            dataIndex: 'cedula',
-                        },
-                        {
-                            title: 'Correo electrónico',
-                            dataIndex: 'correo',
-                        },
-                        {
-                            title: 'Habilitar/inhabiliar',
-                            dataIndex: 'check',
-                        },
-                    ]}
-                    dataSource={this.state.data} />
-            </div>
-        </>
+                <div>
+                    <Table
+                        loading={this.props.loadingTable}
+                        rowSelection={{
+                            type: "checkbox",
+                            onChange: this.props.onSelectChange
+                        }}
+                        columns={[
+                            {
+                                title: 'Nombres',
+                                dataIndex: 'nombres',
+                            },
+                            {
+                                title: 'Cédula',
+                                dataIndex: 'cedula',
+                                responsive: ['lg']
+                            },
+                            {
+                                title: 'Correo electrónico',
+                                dataIndex: 'correo',
+                                responsive: ['lg']
+                            },
+                            {
+                                title: 'Habilitar/inhabiliar',
+                                dataIndex: 'check',
+                            },
+                        ]}
+                        dataSource={this.props.data_administrador} />
+                </div>
+            </>
         );
     }
 }

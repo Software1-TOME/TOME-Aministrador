@@ -1,4 +1,4 @@
-import { Switch, Route, BrowserRouter } from "react-router-dom";
+import { Switch, Route,HashRouter} from "react-router-dom";
 import IndexPage from "./views/IndexPage";
 import LayoutPage from "./views/LayoutPage";
 import { SelectedProvider } from './context/SelectedContext'
@@ -7,12 +7,12 @@ import './App.css';
 function App() {
   return (
     <SelectedProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Switch>
           <Route path="/" component={IndexPage} exact />
           <Route path="/inicio" component={LayoutPage} />
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
     </SelectedProvider>
 
   );
