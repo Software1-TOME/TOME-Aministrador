@@ -10,6 +10,19 @@ const TableEditPendiente = (props) => {
         setTelefono, setCedula,
         setTipoCuenta, setNumCuenta,
         setProfesion, setBanco } = useContext(SelectedContext)
+
+    const data = {
+        name: selected.nombres,
+        apellidos: selected.apellidos,
+        cedula: selected.cedula,
+        telefono: selected.telefono,
+        email: selected.email,
+        tipo_cuenta: selected.tipo_cuenta,
+        numero_cuenta: selected.numero_cuenta,
+        banco: selected.banco,
+        profesion: selected.profesion,
+    }
+
     const [form] = Form.useForm()
 
     const API_URL = 'http://tomesoft1.pythonanywhere.com'
@@ -104,13 +117,13 @@ const TableEditPendiente = (props) => {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 10 }}
                 preserve={false}
-                layout="horizontal">
+                layout="horizontal"
+                initialValues={data} >
                 <Form.Item>
-                    <Button type="link" htmlType="button" onClick={onFill}>
+                    <Button type="link" htmlType="button" id="fill-form" onClick={onFill}>
                         Llenar datos
                     </Button>
                 </Form.Item>
-
 
                 <Divider orientation="left" className="divider-edit">Informacion Personal</Divider>
 

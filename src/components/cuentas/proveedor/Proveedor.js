@@ -9,8 +9,8 @@ import Proveedores from "./Proveedores/Proveedores";
 import aceptar from '../../../img/aceptar.png'
 import rechazar from '../../../img/rechazar.png'
 import SelectedContex from '../../../context/SelectedContext'
-import TableEditPendiente from "./Proveedores/TableEditPendiente";
-import TablePendiente from './Proveedores/TablePendiente';
+import TableEditPendiente from "./Tables/TableEditPendiente";
+import TablePendiente from './Tables/TablePendiente';
 const { TabPane } = Tabs;
 const { Search } = Input;
 
@@ -40,6 +40,7 @@ class Proveedor extends Component {
             is_changed: false,
             contexto: context,
             confirmEdit: false,
+            updated: false, 
         };
     }
 
@@ -82,8 +83,62 @@ class Proveedor extends Component {
         return value.data;
     }
 
-    handleEdit = (e) => {
+    async load_proveedores() {
+        this.setState({ loading_proveedores: true })
+        let proveedores = []
+        let value = await MetodosAxios.obtener_proveedores();
+        let data = value.data
+        let count = 1;
+        for (let proveedor of data) {
+            let element = await getProveedor(proveedor, count)
+            proveedores.push(element)
+            count++;
+        }
+        this.setState({
+            proveedores: proveedores,
+            all_proveedores: proveedores,
+            loading_proveedores: false
+        })
 
+
+    }
+
+    getAllchangedValued(proveedor) {
+        const { nombres, apellidos, telefono,
+            cedula, numero_cuenta, banco,
+            tipo_cuenta, email, profesion } = this.context
+
+        let data = {
+            proveedor_id: proveedor.proveedor_id,
+            pendiente_id: proveedor.pendiente_id,
+            user_datos: proveedor.user_datos,
+            email: email === "" ? proveedor.email : email,
+            banco: banco === "" ? proveedor.banco : banco,
+            tipo_cuenta: tipo_cuenta === "" ? proveedor.tipo_cuenta : tipo_cuenta,
+            numero_cuenta: numero_cuenta === "" ? proveedor.numero_cuenta : numero_cuenta,
+            profesion: profesion === "" ? proveedor.profesion : profesion,
+            ano_experiencia: proveedor.ano_experiencia,
+            nombres: nombres === "" ? proveedor.nombres : nombres,
+            apellidos: apellidos === "" ? proveedor.apellidos : apellidos,
+            telefono: telefono === "" ? proveedor.telefono : telefono,
+            cedula: cedula === "" ? proveedor.cedula : cedula,
+            tipo_user: 'Proveedor_Pendiente',
+        }
+        return data
+
+    }
+
+    handleFill = () => {
+        let buttons = document.getElementsByClassName('ant-btn ant-btn-link')
+        for (let btn of buttons) {
+            if (btn.id === "fill-form") {
+                btn.click()
+            }
+        }
+    }
+
+    handleEdit = (e) => {
+        this.handleFill()
         const { setShowEdit, setShow } = this.context
         setShowEdit(true)
         setShow(false)
@@ -92,68 +147,59 @@ class Proveedor extends Component {
 
 
     handleSaveEdit = (e) => {
-        this.handleOk(true)
+        this.handleUpdateData()
     }
 
     handleConfirmEdit = (e) => {
         this.setState({ confirmEdit: true })
     }
 
+    handleUpdateData = () => {
+        const { selected , setShow, setShowEdit, reset} = this.context
+        try {
+            let data = this.getAllchangedValued(selected)
+            const url= 'https://tomesoft1.pythonanywhere.com/update_pendiente/'
+            MetodosAxios.actualizar_pendiente(url,data).then(value=>{
+                let datos = value.data;
+                if(datos.success){
+                    this.setState({ is_changed: true, 
+                        confirmEdit: false, updated: true,
+                        msg: "Se ha actualizado la informacion"})
+                    setShow(false)
+                    setShowEdit(false)
+                }else{
+                    this.setState({ failed: true, error_msg: datos.error, 
+                    confirmEdit: false, updated: false })
+                    setShowEdit(false)
+                    console.log(datos.code)
+                }
 
-    getAllchangedValued(proveedor) {
-        const { nombres, apellidos, telefono,
-            cedula, numero_cuenta, banco,
-            tipo_cuenta, email, profesion } = this.context       
-
-        let data = {
-            proveedor_id: proveedor.proveedor_id,
-            pendiente_id: proveedor.pendiente_id,
-            user_datos: proveedor.user_datos,
-            email: email===""? proveedor.email: email,
-            banco: banco===""? proveedor.banco: banco,
-            tipo_cuenta: tipo_cuenta===""? proveedor.tipo_cuenta : tipo_cuenta,
-            numero_cuenta: numero_cuenta===""? proveedor.numero_cuenta: numero_cuenta,
-            profesion: profesion===""? proveedor.profesion: profesion,
-            ano_experiencia: proveedor.ano_experiencia,
-            is_changed: true,
-            nombres: nombres===""? proveedor.nombres: nombres,
-            apellidos: apellidos===""? proveedor.apellidos: apellidos,
-            telefono: telefono===""? proveedor.telefono: telefono,
-            cedula: cedula===""? proveedor.cedula: cedula,
-            tipo_wanted: 'Proveedor',
+            })
+            reset()
+        }
+        catch (e) {
+            this.setState({ failed: true })
+            setShow(false)
+            reset()
 
         }
-        return data
 
     }
 
-    handleRegister = (e) => {
-        this.handleOk(false)
-    }
 
+    handleOk = (e) => {
+        const { selected, setShow, reset, setShowEdit } = this.context
 
-
-    handleOk = (bool) => {
-        const { selected, setShow, reset , setEdit} = this.context
-        
         try {
             //console.log(selected)
             if (selected.valid_profesion) {
-                let data = {}
-                if (bool) {
-                    data = this.getAllchangedValued(selected)
-                } else {
-                    data = selected;
-                }
-                //console.log(data)
-                
+                let data = selected;
                 MetodosAxios.register_proveedor(data).then(value => {
                     let datos = value.data;
                     if (datos.success) {
                         this.setState({ created: true })
-
                         setShow(false)
-                        setEdit(false)
+                        setShowEdit(false)
                         let creado = {
                             password: datos.password,
                             email: datos.username
@@ -189,6 +235,7 @@ class Proveedor extends Component {
             failed: false,
             sent: false,
             confirmEdit: false,
+            updated: false,
         });
 
         reset()
@@ -213,16 +260,16 @@ class Proveedor extends Component {
 
     }
 
-    handleReset=()=>{
+    handleReset = () => {
         let buttons = document.getElementsByClassName('ant-btn ant-btn-link')
-        for(let btn of buttons){
-            if(btn.id==="reset-form"){
+        for (let btn of buttons) {
+            if (btn.id === "reset-form") {
                 btn.click()
             }
         }
     }
 
-    handleCloseEdit=()=>{
+    handleCloseEdit = () => {
         this.handleReset()
         const { setShow, setShowEdit, setSelected, setEdit, reset } = this.context
         setShow(false)
@@ -235,6 +282,7 @@ class Proveedor extends Component {
             failed: false,
             sent: false,
             confirmEdit: false,
+            updated: false,
         });
 
         reset()
@@ -242,25 +290,7 @@ class Proveedor extends Component {
     }
 
 
-    async load_proveedores() {
-        this.setState({ loading_proveedores: true })
-        let proveedores = []
-        let value = await MetodosAxios.obtener_proveedores();
-        let data = value.data
-        let count = 1;
-        for (let proveedor of data) {
-            let element = await getProveedor(proveedor, count)
-            proveedores.push(element)
-            count++;
-        }
-        this.setState({
-            proveedores: proveedores,
-            all_proveedores: proveedores,
-            loading_proveedores: false
-        })
 
-
-    }
 
 
     onSearch = (value) => {
@@ -362,7 +392,7 @@ class Proveedor extends Component {
                             onCancel={this.handleCancel}
                             footer={[
                                 <div className="footer">
-                                    <Button key="accept" onClick={this.handleRegister} className="button-modal" ghost={true}>
+                                    <Button key="accept" onClick={this.handleOk} className="button-modal" ghost={true}>
                                         <img className="icon" src={aceptar} alt="Aceptar"></img>
                                     </Button>
                                     <Button key="cancel" onClick={this.handleCancel} ghost={true}>
@@ -432,10 +462,10 @@ class Proveedor extends Component {
                             ]}>
                             <div className="msg-container">
                                 <div className="success-msg">
-                                    <h3 className="msg-text">¿Desea registrar al proveedor?</h3>
+                                    <h3 className="msg-text">¿Desea guardar los cambios al perfil?</h3>
                                 </div>
                                 <div className="detail">
-                                    <h3 className="msg-detail">Se registrará al proveedor con los cambios realizados</h3>
+                                    <h3 className="msg-detail">Se guardarán los cambios realizados</h3>
                                 </div>
                             </div>
                         </Modal>
@@ -487,6 +517,24 @@ class Proveedor extends Component {
                         <Modal
                             key="modal-email"
                             visible={this.state.sent}
+                            width={350}
+                            onCancel={this.handleCancel}
+                            footer={[
+                                <div className="footer">
+                                    <Button key="accept" onClick={this.handleCancel} className="button-request">
+                                        Aceptar
+                            </Button>
+                                </div>
+                            ]}>
+                            <div className="msg-container">
+                                <h3 className="msg-text">{this.state.msg}</h3>
+                            </div>
+                        </Modal>
+
+                        {/**UPDATE DATA*/}
+                        <Modal
+                            key="modal-email"
+                            visible={this.state.updated}
                             width={350}
                             onCancel={this.handleCancel}
                             footer={[

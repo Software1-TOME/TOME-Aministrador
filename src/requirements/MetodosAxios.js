@@ -116,4 +116,8 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.get('/profesiones/')
   }
 
+  static actualizar_pendiente(url, data){
+    return MetodosAxios.instanceAxios.post(url, data)
+  }
+
 }
