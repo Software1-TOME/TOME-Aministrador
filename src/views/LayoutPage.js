@@ -7,7 +7,7 @@ import AdmCuentas from "../components/cuentas/admcuentas/AdmCuentas";
 import Administrador from "../components/cuentas/administrador/Administrador";
 import Proveedor from "../components/cuentas/proveedor/Proveedor";
 import Solicitante from "../components/cuentas/solicitante/Solicitante";
-import Categorias from "../components/servicios/categorias/Categorias";
+import Categorias from "../components/servicios/categorias/AdmCategorias";
 import SubCategorias from "../components/servicios/sub-categorias/SubCategoria";
 import "./LayoutPage.css";
 const { Header, Content, Sider } = Layout;

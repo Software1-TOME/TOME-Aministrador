@@ -1,0 +1,12 @@
+.titulo{
+    font-size: 2em;
+}
+#agregarButton{
+    font-size: 1em;
+    background-color: #052434;
+    color: white;
+    font-family: 'Myriad Pro', sans-serif !important;
+    width: 90px;
+    padding: 2px;
+    height: auto;
+}

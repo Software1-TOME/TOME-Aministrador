@@ -5,7 +5,7 @@ class Categorias extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedRowKeys: [], // Check here to configure the default column
+            selectedRowKeys: [],
             data: [],
         };
     }
@@ -22,7 +22,7 @@ class Categorias extends Component {
                         loading={this.props.loadingTable}
                         rowSelection={{
                             type: "checkbox",
-                            onChange: this.props.onSelectChange
+                            onChange: this.props.onSelectChange,
                         }}
                         columns={[
                             {
@@ -30,11 +30,15 @@ class Categorias extends Component {
                                 dataIndex: 'nombre',
                             },
                             {
-                                title: 'Descripcion',
+                                title: 'Descripción',
                                 dataIndex: 'descripcion',
                                 responsive: ['lg']
                             },
-
+                            {
+                                title: 'Habilitar/inhabiliar',
+                                dataIndex: 'check',
+                            },
+                          
                         ]}
                         dataSource={this.props.data_categoria} />
                 </div>

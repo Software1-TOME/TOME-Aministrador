@@ -120,4 +120,34 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.post(url, data)
   }
 
+  
+  /*
+    obtener_categorias
+    autor: Lilibeth
+    descripccion: Obtiene todas las categorias
+    parametros: None
+  */
+ static obtener_categorias = () => {
+  return MetodosAxios.instanceAxios.get("/categorias/")
+};
+ /*
+    cambio_categoria_estado
+    autor: Lilibeth
+    descripccion: Cambia estado de una categoria
+    parametros: boolean estado, int id
+  */
+ static cambio_categoria_estado = (estado, id) => {
+  console.log(estado, id)
+  return MetodosAxios.instanceAxios.put(`/categoria_estado/${id}`, estado)
+};
+/*
+    eliminar_categoria
+    autor: lilibeth
+    descripccion: Elimina una categoria
+    parametros: int id
+  */
+ static eliminar_categoria(id) {
+  return MetodosAxios.instanceAxios.delete(`/categoria_delete/${id}`)
+};
+
 }
