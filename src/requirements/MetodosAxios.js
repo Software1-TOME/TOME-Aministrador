@@ -149,5 +149,33 @@ export default class MetodosAxios {
  static eliminar_categoria(id) {
   return MetodosAxios.instanceAxios.delete(`/categoria_delete/${id}`)
 };
+  /*
+    obtener_Subcategorias
+    autor: Lilibeth
+    descripccion: Obtiene todas las sub-categorias
+    parametros: None
+  */
+ static obtener_subcategorias = () => {
+  return MetodosAxios.instanceAxios.get("/servicios/")
+};
+ /*
+    cambio_subcategoria_estado
+    autor: Lilibeth
+    descripccion: Cambia estado de una subcategoria
+    parametros: boolean estado, int id
+  */
+ static cambio_subcategoria_estado = (estado, id) => {
+  console.log(estado, id)
+  return MetodosAxios.instanceAxios.put(`/servicios_estado/${id}`, estado)
+};
+/*
+    eliminar_subcategoria
+    autor: lilibeth
+    descripccion: Elimina una subcategoria
+    parametros: int id
+  */
+ static eliminar_subcategoria(id) {
+  return MetodosAxios.instanceAxios.delete(`/servicios_delete/${id}`)
+};
 
 }
