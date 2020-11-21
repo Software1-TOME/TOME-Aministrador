@@ -24,6 +24,8 @@ class AdmSubCategorias extends Component {
             loadingcategorias:true,
             modalVisible: false,
             nombre:'',
+            descripcion:'',
+            key:''
         };
     }
     componentDidMount() {
@@ -142,7 +144,11 @@ class AdmSubCategorias extends Component {
         }
         this.llenarTablaSubCategoria();
     }
-
+    handleSelect = (event) => {
+        console.log(event) 
+        this.state.key=event  
+      } 
+    
     loadServices=()=>{
         return this.state.loadingcategorias ?<title>cargando</title>
         :this.state.data_categoria.map((categorias , i) => {
@@ -153,8 +159,8 @@ class AdmSubCategorias extends Component {
                 servicios.push(this.state.data_subcategoria[i])
                 }
             }
-         return <TabPane tab={categorias.nombre} key={i}>
-     
+            if(this.state.key==''){this.handleSelect(categorias.key)}
+         return <TabPane tab={categorias.nombre} key={categorias.key}  >
              <SubCategorias
                  onSelectChange={this.onSelectChangesubCategoria}
                  data_subcategoria={servicios}
@@ -170,10 +176,14 @@ class AdmSubCategorias extends Component {
         this.setState({nombre:'',descripcion:''})
         this.setModalVisible(false)
     }
-    guardarsubcategoria(){
-       /* await MetodosAxios.crear_categoria({nombre:this.nombre,descripcion: this.descripcion}).then(res => {
+    async guardarsubcategoria(){
+        var data = new FormData();
+        data.append('nombre', this.state.nombre);
+        data.append('descripcion', this.state.descripcion);
+        data.append('categoria', this.state.key);
+        await MetodosAxios.crear_subcategoria(data).then(res => {
             console.log(res)
-        })*/
+        })
         this.limpiarformsubcategoria()
     }
     render() {
@@ -182,7 +192,7 @@ class AdmSubCategorias extends Component {
             < >
                 <h1 className="titulo">Sub-Categorías</h1>
                 <div className="card-container">
-                    <Tabs tabBarExtraContent={<div>
+                    <Tabs onTabClick={(event) => this.handleSelect(event)} tabBarExtraContent={<div> 
                         <Button
                             id="agregarButton"
                             type="text"

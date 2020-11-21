@@ -177,5 +177,22 @@ export default class MetodosAxios {
  static eliminar_subcategoria(id) {
   return MetodosAxios.instanceAxios.delete(`/servicios_delete/${id}`)
 };
-
+/*
+    crear_categoria
+    autor: lilibeth
+    descripccion: crear una categoria
+    parametros: none
+  */
+ static crear_categoria(data) {
+  return MetodosAxios.instanceAxios.post(`/categorias/`,data)
+};
+/*
+    crear_subcategoria
+    autor: lilibeth
+    descripccion: crea una subcategoria
+    parametros: none
+  */
+ static crear_subcategoria(data) {
+  return MetodosAxios.instanceAxios.post(`/servicios/`,data)
+};
 }

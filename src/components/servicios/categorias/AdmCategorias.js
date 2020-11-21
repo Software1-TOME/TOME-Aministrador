@@ -130,10 +130,14 @@ class AdmCategorias extends Component {
         this.setState({nombre:'',descripcion:''})
         this.setModalVisible(false)
     }
-    guardarcategoria(){
-       /* await MetodosAxios.crear_categoria({nombre:this.nombre,descripcion: this.descripcion}).then(res => {
+    async guardarcategoria(){
+        var data = new FormData();
+        data.append('nombre', this.state.nombre);
+        data.append('descripcion', this.state.descripcion);
+        //data.append('foto', fs.createReadStream('/C:/Users/TASHZ/Pictures/fondosPantalla/3.jpg'));
+        await MetodosAxios.crear_categoria(data).then(res => {
             console.log(res)
-        })*/
+        })
         this.limpiarformcategoria()
     }
 
