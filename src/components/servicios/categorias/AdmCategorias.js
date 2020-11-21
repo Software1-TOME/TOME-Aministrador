@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import { Tabs, Switch, Input, Button } from 'antd';
+import { Tabs, Switch, Input, Button,Modal } from 'antd';
 import Categorias from "./tabs/Categorias";
+import AgregarCategoria from "./tabs/AgregarCategoria";
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import Eliminar from "../../../img/icons/eliminar.png";
+import Agregar from '../../../img/icons/agregar.png';
 import Icon from '@ant-design/icons';
 import "./AdmCategorias.css"
 const { TabPane } = Tabs;
@@ -17,13 +19,15 @@ class AdmCategorias extends Component {
             data_categoria: [],
             loadingTable: false,
             loadingCheck: false,
+            modalVisible: false,
+            nombre:'',
+            descripcion:''
         };
     }
     componentDidMount() {
         this.llenarTablaCategoria();
     }
 
-   
     llenarTablaCategoria = () => {
         this.setState({
             loadingTable: true
@@ -118,6 +122,21 @@ class AdmCategorias extends Component {
         }
         this.llenarTablaCategoria();
     }
+
+    setModalVisible(modalVisible) {
+        this.setState({ modalVisible });
+    }
+    limpiarformcategoria(){
+        this.setState({nombre:'',descripcion:''})
+        this.setModalVisible(false)
+    }
+    guardarcategoria(){
+       /* await MetodosAxios.crear_categoria({nombre:this.nombre,descripcion: this.descripcion}).then(res => {
+            console.log(res)
+        })*/
+        this.limpiarformcategoria()
+    }
+
     render() {
 
         return (
@@ -128,9 +147,11 @@ class AdmCategorias extends Component {
                         <Button
                             id="agregarButton"
                             type="text"
+                            shape="circle"
                             size="small"
-                           // onClick={() => { this.eliminar() }}
-                        >Agregar</Button>
+                            icon={<Icon component={() => (<img id="agregarimgButton" alt="icono eliminar" src={Agregar} />)} />}
+                            onClick={() => {   this.setModalVisible(true)}}
+                        />
                         <Search
                             placeholder="Buscar"
                             allowClear
@@ -157,7 +178,19 @@ class AdmCategorias extends Component {
                         </TabPane>
                     </Tabs>
                 </div>
-                
+                <Modal
+                    className="modal"
+                    title="Agregar Categoría"
+                    centered
+                    visible={this.state.modalVisible}
+                    okText="Guardar"
+                    cancelText="Cancelar"
+                    closable={false}
+                    onOk={() => this.guardarcategoria()}
+                    onCancel={() => this.limpiarformcategoria()}
+                >
+                    <AgregarCategoria param={this.state}/>
+                </Modal>
             </>
         );
     }

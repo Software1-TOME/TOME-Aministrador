@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { Tabs, Switch, Input, Button } from 'antd';
+import { Tabs, Switch, Input, Button,Modal } from 'antd';
 import SubCategorias from "./tabs/SubCategoria";
 import MetodosAxios from "../../../requirements/MetodosAxios";
+import AgregarSubCategoria from "./tabs/AgregarSubCategoria";
+import Agregar from '../../../img/icons/agregar.png';
 import Eliminar from "../../../img/icons/eliminar.png";
 import Icon from '@ant-design/icons';
 import "./AdmSubCategorias.css"
@@ -19,7 +21,9 @@ class AdmSubCategorias extends Component {
             data_subcategoria: [],
             loadingTable: false,
             loadingCheck: false,
-            loadingcategorias:true
+            loadingcategorias:true,
+            modalVisible: false,
+            nombre:'',
         };
     }
     componentDidMount() {
@@ -142,16 +146,15 @@ class AdmSubCategorias extends Component {
     loadServices=()=>{
         return this.state.loadingcategorias ?<title>cargando</title>
         :this.state.data_categoria.map((categorias , i) => {
-            {console.log(categorias.nombre)}
             let servicios=[]
             for(let i = 0; i < this.state.data_subcategoria.length; i++){
                 let servicio=this.state.data_subcategoria[i]
-                if(servicio.categoria==categorias.key){
+                if(servicio.categoria===categorias.key){
                 servicios.push(this.state.data_subcategoria[i])
                 }
             }
          return <TabPane tab={categorias.nombre} key={i}>
-             {console.log(servicios)}
+     
              <SubCategorias
                  onSelectChange={this.onSelectChangesubCategoria}
                  data_subcategoria={servicios}
@@ -159,6 +162,19 @@ class AdmSubCategorias extends Component {
              />
          </TabPane>
           })
+    }
+    setModalVisible(modalVisible) {
+        this.setState({ modalVisible });
+    }
+    limpiarformsubcategoria(){
+        this.setState({nombre:'',descripcion:''})
+        this.setModalVisible(false)
+    }
+    guardarsubcategoria(){
+       /* await MetodosAxios.crear_categoria({nombre:this.nombre,descripcion: this.descripcion}).then(res => {
+            console.log(res)
+        })*/
+        this.limpiarformsubcategoria()
     }
     render() {
 
@@ -170,9 +186,11 @@ class AdmSubCategorias extends Component {
                         <Button
                             id="agregarButton"
                             type="text"
+                            shape="circle"
                             size="small"
-                           // onClick={() => { this.eliminar() }}
-                        >Agregar</Button>
+                            icon={<Icon component={() => (<img id="agregarimgButton" alt="icono eliminar" src={Agregar} />)} />}
+                            onClick={() => {   this.setModalVisible(true)}}
+                        />
                         <Search
                             placeholder="Buscar"
                             allowClear
@@ -193,7 +211,19 @@ class AdmSubCategorias extends Component {
                        
                     </Tabs>
                 </div>
-                
+                <Modal
+                    className="modal"
+                    title="Agregar Sub-Categoría"
+                    centered
+                    visible={this.state.modalVisible}
+                    okText="Guardar"
+                    cancelText="Cancelar"
+                    closable={false}
+                    onOk={() => this.guardarsubcategoria()}
+                    onCancel={() => this.limpiarformsubcategoria()}
+                >
+                    <AgregarSubCategoria param={this.state}/>
+                </Modal>
             </>
         );
     }
