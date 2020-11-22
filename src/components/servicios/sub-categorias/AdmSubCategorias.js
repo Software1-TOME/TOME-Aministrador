@@ -6,6 +6,7 @@ import AgregarSubCategoria from "./tabs/AgregarSubCategoria";
 import Agregar from '../../../img/icons/agregar.png';
 import Eliminar from "../../../img/icons/eliminar.png";
 import Icon from '@ant-design/icons';
+import {ValidarTexto} from '../Validacion/validaciones'
 import "./AdmSubCategorias.css"
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -176,7 +177,20 @@ class AdmSubCategorias extends Component {
         this.setState({nombre:'',descripcion:''})
         this.setModalVisible(false)
     }
+    validarform(){
+        if(this.state.nombre!=''&& this.state.descripcion!='' ){
+            return true
+        }
+        if(this.state.nombre==''){
+            ValidarTexto(false,'errornombre')
+        }
+        if(this.state.descripcion==''){
+            ValidarTexto(false,'errordescripcion')
+        }
+        return false
+    }
     async guardarsubcategoria(){
+        if(this.validarform()){
         var data = new FormData();
         data.append('nombre', this.state.nombre);
         data.append('descripcion', this.state.descripcion);
@@ -184,7 +198,9 @@ class AdmSubCategorias extends Component {
         await MetodosAxios.crear_subcategoria(data).then(res => {
             console.log(res)
         })
+        this.llenarTablaSubCategoria();
         this.limpiarformsubcategoria()
+        }
     }
     render() {
 

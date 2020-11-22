@@ -7,6 +7,7 @@ import Eliminar from "../../../img/icons/eliminar.png";
 import Agregar from '../../../img/icons/agregar.png';
 import Icon from '@ant-design/icons';
 import iconimg from '../../../img/icons/imagen.png'
+import {ValidarTexto} from '../Validacion/validaciones'
 import "./AdmCategorias.css"
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -21,25 +22,19 @@ class AdmCategorias extends Component {
             loadingTable: false,
             loadingCheck: false,
             modalVisible: false,
+            modalalert: false,
             nombre:'',
             descripcion:'',
             picture: iconimg,
             fileimg: null,
             uploadValue: 0,
             nompicture: "Ningun archivo seleccionado",
+            limpiar:false
         };
     }
     componentDidMount() {
         this.llenarTablaCategoria();
     }
-    handleChangeimg = async (imgurl, uploadValue, nompicture, fileimg) => {
-        this.setState({
-          img: imgurl,
-          uploadValue: uploadValue,
-          nompicture: nompicture,
-          fileimg: fileimg
-        });
-      }
 
     llenarTablaCategoria = () => {
         this.setState({
@@ -134,11 +129,25 @@ class AdmCategorias extends Component {
             }
         }
         this.llenarTablaCategoria();
+        this.setModalAlertVisible(false)
     }
 
     setModalVisible(modalVisible) {
         this.setState({ modalVisible });
     }
+
+    setModalAlertVisible(modalalert) {
+        this.setState({ modalalert });
+    }
+    handleChangeimg = async (imgurl, uploadValue, nompicture, fileimg) => {
+        this.setState({
+          img: imgurl,
+          uploadValue: uploadValue,
+          nompicture: nompicture,
+          fileimg: fileimg
+        });
+    }
+      
     limpiarformcategoria(){
         this.setState({
             nombre:'',
@@ -146,12 +155,28 @@ class AdmCategorias extends Component {
             picture: iconimg,
             uploadValue:0,
             nompicture: "Ningun archivo seleccionado",
-            fileimg: null
+            fileimg: null,
+            limpiar:true
         })
-        console.log(this.state.fileimg)
         this.setModalVisible(false)  
     }
+    validarform(){
+        if(this.state.nombre!=''&& this.state.descripcion!='' && this.state.fileimg!=null ){
+            return true
+        }
+        if(this.state.nombre==''){
+            ValidarTexto(false,'errornombre')
+        }
+        if(this.state.descripcion==''){
+            ValidarTexto(false,'errordescripcion')
+        }
+        if(this.state.fileimg==null){
+            ValidarTexto(false,'errorfoto')
+        }
+        return false
+    }
     async guardarcategoria(){
+        if(this.validarform()){
         var data = new FormData();
         data.append('nombre', this.state.nombre);
         data.append('descripcion', this.state.descripcion);
@@ -159,7 +184,9 @@ class AdmCategorias extends Component {
         await MetodosAxios.crear_categoria(data).then(res => {
             console.log(res)
         })
+        this.llenarTablaCategoria();
         this.limpiarformcategoria()
+        }
     }
 
     render() {
@@ -175,7 +202,7 @@ class AdmCategorias extends Component {
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono eliminar" src={Agregar} />)} />}
-                            onClick={() => {   this.setModalVisible(true)}}
+                            onClick={() => { this.setModalVisible(true)}}
                         />
                         <Search
                             placeholder="Buscar"
@@ -189,7 +216,7 @@ class AdmCategorias extends Component {
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img alt="icono eliminar" src={Eliminar} height="auto" width="12px" />)} />}
-                            onClick={() => { this.eliminar() }}
+                            onClick={() => { this.setModalAlertVisible(true) }}
                         />
                     </div>}
                         type="card" size="large" >
@@ -215,6 +242,19 @@ class AdmCategorias extends Component {
                     onCancel={() => this.limpiarformcategoria()}
                 >
                     <AgregarCategoria param={this.state}  handleChangeimg={this.handleChangeimg}/>
+                </Modal>
+                <Modal
+                    className="modal"
+                    title="Eliminar Categoría"
+                    centered
+                    visible={this.state.modalalert}
+                    okText="Aceptar"
+                    cancelText="Cancelar"
+                    closable={false}
+                    onOk={() => this.eliminar()}
+                    onCancel={() => this.setModalAlertVisible(false)}
+                >
+                  <div>Si eliminas esta categoria también se eliminarán los servicios relacionados</div>
                 </Modal>
             </>
         );

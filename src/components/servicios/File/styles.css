@@ -43,8 +43,3 @@ label {
     color: var(--text-color, #052434);
     font-size: small;
   }
-  #error{
-    color: red;
-    font-size: x-small; 
-    font-family: 'Myriad Pro', sans-serif;
-  }
