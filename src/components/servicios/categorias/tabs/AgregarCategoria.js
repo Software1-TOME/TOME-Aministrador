@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Form, Input } from 'antd';
+import File from '../../File/FileUpload'
 import "../AdmCategorias.css"
 
 const AgregarCategoria =(props) => {
-  const {param} = props
+  const {param,handleChangeimg} = props
   const [form] = Form.useForm();
   const layout ={
         labelCol: {
@@ -42,8 +43,8 @@ const handleSubmitted = () => {
               className="form"
               >
               <Input.TextArea initialValues="" className="input2" rows="7"  onChange={value=>{handleChangedescripcion(value)}} />
-           
           </Form.Item>
+          <File param={param}  handleChangeimg={handleChangeimg}/>
       </Form>
       </div>
     </>

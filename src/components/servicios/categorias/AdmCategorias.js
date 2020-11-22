@@ -6,6 +6,7 @@ import MetodosAxios from "../../../requirements/MetodosAxios";
 import Eliminar from "../../../img/icons/eliminar.png";
 import Agregar from '../../../img/icons/agregar.png';
 import Icon from '@ant-design/icons';
+import iconimg from '../../../img/icons/imagen.png'
 import "./AdmCategorias.css"
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -21,12 +22,24 @@ class AdmCategorias extends Component {
             loadingCheck: false,
             modalVisible: false,
             nombre:'',
-            descripcion:''
+            descripcion:'',
+            picture: iconimg,
+            fileimg: null,
+            uploadValue: 0,
+            nompicture: "Ningun archivo seleccionado",
         };
     }
     componentDidMount() {
         this.llenarTablaCategoria();
     }
+    handleChangeimg = async (imgurl, uploadValue, nompicture, fileimg) => {
+        this.setState({
+          img: imgurl,
+          uploadValue: uploadValue,
+          nompicture: nompicture,
+          fileimg: fileimg
+        });
+      }
 
     llenarTablaCategoria = () => {
         this.setState({
@@ -127,14 +140,22 @@ class AdmCategorias extends Component {
         this.setState({ modalVisible });
     }
     limpiarformcategoria(){
-        this.setState({nombre:'',descripcion:''})
-        this.setModalVisible(false)
+        this.setState({
+            nombre:'',
+            descripcion:'',
+            picture: iconimg,
+            uploadValue:0,
+            nompicture: "Ningun archivo seleccionado",
+            fileimg: null
+        })
+        console.log(this.state.fileimg)
+        this.setModalVisible(false)  
     }
     async guardarcategoria(){
         var data = new FormData();
         data.append('nombre', this.state.nombre);
         data.append('descripcion', this.state.descripcion);
-        //data.append('foto', fs.createReadStream('/C:/Users/TASHZ/Pictures/fondosPantalla/3.jpg'));
+        data.append('foto', this.state.fileimg);
         await MetodosAxios.crear_categoria(data).then(res => {
             console.log(res)
         })
@@ -193,7 +214,7 @@ class AdmCategorias extends Component {
                     onOk={() => this.guardarcategoria()}
                     onCancel={() => this.limpiarformcategoria()}
                 >
-                    <AgregarCategoria param={this.state}/>
+                    <AgregarCategoria param={this.state}  handleChangeimg={this.handleChangeimg}/>
                 </Modal>
             </>
         );
