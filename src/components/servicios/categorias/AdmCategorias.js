@@ -32,7 +32,10 @@ class AdmCategorias extends Component {
             uploadValue: 0,
             nompicture: "Ningun archivo seleccionado",
             limpiar:false,
-            categoria:null
+            limpiarEdit:false,
+            categoria:null,
+            nombreE:'',
+            descripcionE:'',
         };
     }
     componentDidMount() {
@@ -68,22 +71,12 @@ class AdmCategorias extends Component {
             })
         })
     }
-
-    CategoriaSeleccionada = (categoria) => {
-        this.setState({
-            picture:categoria.foto,
-            categoria: categoria
-        })
-     //  setTimeout(() => {
-            this.setModalVisibleEdit(true)
-   //}, 1000);
-    }
  
     async onChangeCheckCategoria(i, checked){
         this.setState({
             loadingCheck: true
         })
-        await MetodosAxios.cambio_categoria_estado({ 'estado': checked }, i).then(res => {
+        await MetodosAxios.cambio_categoria_update({ 'estado': checked }, i).then(res => {
             console.log(res)
         })
         this.setState({
@@ -164,32 +157,61 @@ class AdmCategorias extends Component {
           fileimg: fileimg
         });
     }
-      
+    limpiarCategoriaElegida(){
+            this.setState({
+                categoria:null
+            })
+        
+    }
     limpiarformcategoria(){
         this.setState({
             nombre:'',
             descripcion:'',
-         //   picture: iconimg,
+            picture: iconimg,
             uploadValue:0,
             nompicture: "Ningun archivo seleccionado",
             fileimg: null,
-            limpiar:true
+            limpiar:true,
         })
-        this.setModalVisible(false) 
-        this.setModalVisibleEdit(false)  
+    }
+
+    limpiarformcategoriaEdit(){
+        this.setState({
+            nombre:'',
+            descripcion:'',
+            limpiarEdit:true,
+            picture: iconimg,
+            uploadValue:0,
+            nompicture: "Ningun archivo seleccionado",
+            fileimg: null,
+        })
     }
     validarform(){
-        if(this.state.nombre!=''&& this.state.descripcion!='' && this.state.fileimg!=null ){
+        if(this.state.nombre!==''&& this.state.descripcion!=='' && this.state.fileimg!==null ){
+            console.log("hola")
             return true
         }
-        if(this.state.nombre==''){
+        if(this.state.nombre===''){
             ValidarTexto(false,'errornombre')
         }
-        if(this.state.descripcion==''){
+        if(this.state.descripcion===''){
             ValidarTexto(false,'errordescripcion')
         }
-        if(this.state.fileimg==null){
+        if(this.state.fileimg===null){
             ValidarTexto(false,'errorfoto')
+        }
+        return false
+    }
+
+    validarformEdit(){
+        if(this.state.nombre!==''&& this.state.descripcion!=='' ){
+            return true
+        }
+        if(this.state.nombre===''){
+            ValidarTexto(false,'errornombre')
+        }
+        if(this.state.descripcion===''){
+            ValidarTexto(false,'errordescripcion')
         }
         return false
     }
@@ -203,10 +225,53 @@ class AdmCategorias extends Component {
             console.log(res)
         })
         this.llenarTablaCategoria();
-        this.limpiarformcategoria()
+        this.CerrarAgregar()
+        }
+      
+    }
+    
+    async guardarEditcategoria(){
+        if(this.validarformEdit()){
+        var data = new FormData();
+        data.append('nombre', this.state.nombre);
+        data.append('descripcion', this.state.descripcion);
+        console.log(this.state.fileimg)
+        if(this.state.fileimg!=null){
+        data.append('foto', this.state.fileimg);
+        }
+        await MetodosAxios.cambio_categoria_update(data, this.state.categoria.key).then(res => {
+            console.log(res)
+        })
+        this.llenarTablaCategoria();
+        this.CerrarEdit()
         }
     }
+    CerrarEdit() {
+       this.limpiarformcategoriaEdit()
+        this.setModalVisibleEdit(false)
+    }
+    CerrarAgregar() {
+         this.limpiarformcategoria()
+           this.setModalVisible(false)
+       }
+    AgregarCategoria() {
+      //  this.limpiarCategoriaElegida()
+      this.limpiarformcategoria() 
+      console.log("nombre",this.state.nombre) 
+      this.setModalVisible(true)
+   }
 
+   EditarCategoria = (categoria) => {
+    this.limpiarformcategoriaEdit()
+    this.setState({
+        picture:categoria.foto,
+        categoria: categoria,
+        nombre:categoria.nombre,
+        descripcion:categoria.descripcion
+    })
+    console.log(categoria.nombre)
+    this.setModalVisibleEdit(true)
+}
     render() {
 
         return (
@@ -220,7 +285,7 @@ class AdmCategorias extends Component {
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono eliminar" src={Agregar} />)} />}
-                            onClick={() => { this.setModalVisible(true)}}
+                            onClick={() => { this.AgregarCategoria()}}
                         />
                         <Search
                             placeholder="Buscar"
@@ -244,8 +309,7 @@ class AdmCategorias extends Component {
                                 onSelectChange={this.onSelectChangeCategoria}
                                 data_categoria={this.state.data_categoria}
                                 loadingTable={this.state.loadingTable}
-                                CategoriaSeleccionada={this.CategoriaSeleccionada}
-                                state={this.state}
+                                CategoriaSeleccionada={this.EditarCategoria}
                             />
                         </TabPane>
                     </Tabs>
@@ -259,7 +323,7 @@ class AdmCategorias extends Component {
                     cancelText="Cancelar"
                     closable={false}
                     onOk={() => this.guardarcategoria()}
-                    onCancel={() => this.limpiarformcategoria()}
+                    onCancel={() => this.CerrarAgregar()}
                 >
                     <AgregarCategoria param={this.state}  handleChangeimg={this.handleChangeimg}/>
                 </Modal>
@@ -285,8 +349,8 @@ class AdmCategorias extends Component {
                     okText="Guardar"
                     cancelText="Cancelar"
                     closable={false}
-                    onOk={() => this.guardarcategoria()}
-                    onCancel={() => this.limpiarformcategoria()}
+                    onOk={() => this.guardarEditcategoria()}
+                    onCancel={() => this.CerrarEdit()}
                 >
                     <EditarCategoria param={this.state}  handleChangeimg={this.handleChangeimg}/>
                 </Modal>

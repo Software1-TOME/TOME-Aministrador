@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Table } from 'antd';
+import {Table } from 'antd';
 
 
 class Categorias extends Component {
@@ -23,8 +23,6 @@ class Categorias extends Component {
                         onRow={(editar) => {
                             return {
                                 onClick: event => {
-                                this.props.state.picture=editar.foto
-                                console.log(this.props.state.picture)
                                 this.props.CategoriaSeleccionada(editar)
                                 }
                             }

@@ -136,9 +136,9 @@ export default class MetodosAxios {
     descripccion: Cambia estado de una categoria
     parametros: boolean estado, int id
   */
- static cambio_categoria_estado = (estado, id) => {
+ static cambio_categoria_update = (estado, id) => {
   console.log(estado, id)
-  return MetodosAxios.instanceAxios.put(`/categoria_estado/${id}`, estado)
+  return MetodosAxios.instanceAxios.put(`/categoria_update/${id}`, estado)
 };
 /*
     eliminar_categoria

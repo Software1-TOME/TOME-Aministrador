@@ -31,6 +31,11 @@ const handleSubmitted = () => {
   param.limpiar=false}
 }
  
+React.useEffect(() => {
+  param.nombre=''
+  param.descripcion=''
+  param.picture=null
+});
   return (
     <>
       <div className="div_form" >

@@ -1,11 +1,11 @@
-import React from "react";
+import React  from "react";
 import { Form, Input } from 'antd';
-import File from '../../File/FileUpload'
+import FileCategoria from '../../File/FileUpload'
 import "../AdmCategorias.css"
 import '../../Validacion/validaciones.css';
 const EditarCategoria =(props) => {
   const {param,handleChangeimg} = props
-  const [form] = Form.useForm();
+  const [formEdit] = Form.useForm();
   const layout ={
         labelCol: {
           span: 8,
@@ -26,23 +26,29 @@ const handleChangedescripcion=(event)=> {
   if (descripcion) descripcion.textContent = ""
 }
 const handleSubmitted = () => {
-  console.log(param.picture)
-  param.picture=param.categoria.foto
- if(param.limpiar){
-  form.resetFields()
-  param.limpiar=false}
+ if(param.limpiarEdit){
+  formEdit.resetFields()
+  param.limpiarEdit=false}
 }
+React.useEffect(() => {
+  console.log(param.categoria)
+  param.nombre=param.categoria.nombre
+  param.descripcion=param.categoria.descripcion
+  param.picture=param.categoria.foto
+
+});
+
  
   return (
     <>
       <div className="div_form" >
-      <Form {...layout} form={form}  onSubmit={handleSubmitted()} >
+      <Form {...layout} form={formEdit}  onSubmit={handleSubmitted()} >
           <Form.Item
             name="nombre"
             label="Nombre"
             className="form"
           >
-            <Input initialValues="" className="input" placeholder={param.categoria.nombre}  onChange={value=>{handleChangenombre(value)}} />
+            <Input initialValues="" className="input"   defaultValue={param.nombre} onChange={value=>{handleChangenombre(value)}} />
             <div className="Registroerror-div">
               <label className="error" id="errornombre"></label>
             </div>
@@ -53,7 +59,7 @@ const handleSubmitted = () => {
             label="Descripcion"
             className="form"
           >
-            <Input.TextArea initialValues="" className="input2" rows="7"  placeholder={param.categoria.descripcion} onChange={value=>{handleChangedescripcion(value)}} />
+            <Input.TextArea initialValues="" className="input2" rows="7"  defaultValue={param.descripcion} onChange={value=>{handleChangedescripcion(value)}} />
             <div className="Registroerror-div">
               <label className="error" id="errordescripcion"></label>
             </div>
@@ -63,7 +69,7 @@ const handleSubmitted = () => {
             label="Foto"
             className="form"
           >
-          <File param={param}  handleChangeimg={handleChangeimg}  />
+          <FileCategoria param={param}  handleChangeimg={handleChangeimg}  />
           </Form.Item>
       </Form>
       </div>

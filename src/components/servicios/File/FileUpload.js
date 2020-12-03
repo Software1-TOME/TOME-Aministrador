@@ -3,7 +3,7 @@ import "./styles.css";
 import '../Validacion/validaciones.css';
 import { Progress } from 'antd';
 import iconimg from '../../../img/icons/imagen.png'
-import {ValidarExtension,ValidarTexto} from '../Validacion/validaciones'
+import {ValidarExtension} from '../Validacion/validaciones'
 class FileUpload extends React.Component {
     state = {};
     props = {}
@@ -24,7 +24,7 @@ class FileUpload extends React.Component {
     }
 
     triggerInputFile = () => {
-        if (this.fileInput.current != undefined && this.fileInput.current.click != undefined)
+        if (this.fileInput.current !== undefined && this.fileInput.current.click !== undefined)
             this.fileInput.current.click()
             
     }
@@ -35,7 +35,7 @@ class FileUpload extends React.Component {
     }
      handleUpload = (event) => {
         const file = event.target.files[0];
-        if(file!=undefined){
+        if(file!==undefined){
             this.setuploadValue();
             let extension=(file.name).split('.')
             if(extension.length>=2){
@@ -43,11 +43,12 @@ class FileUpload extends React.Component {
                 if (fechac) fechac.textContent = ""
                 let ext=extension[extension.length-1]
                 ext=ext.toLowerCase()
-                if(ext=='jpg'|| ext=='png' || ext=='jfif'){
+                if(ext==='jpg'|| ext==='png' || ext==='jfif'){
                     console.log("extension valida")
                     const reader=new FileReader();
                     reader.onload=()=>{
                         if(reader.readyState===2){
+                            console.log(file)
                             this.setState({
                                 uploadValue: 100,
                                 picture: reader.result,
