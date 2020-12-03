@@ -8,6 +8,7 @@ import Agregar from '../../../img/icons/agregar.png';
 import Icon from '@ant-design/icons';
 import iconimg from '../../../img/icons/imagen.png'
 import {ValidarTexto} from '../Validacion/validaciones'
+import EditarCategoria from './tabs/EditarCategoria'
 import "./AdmCategorias.css"
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -22,6 +23,7 @@ class AdmCategorias extends Component {
             loadingTable: false,
             loadingCheck: false,
             modalVisible: false,
+            modalVisibleEdit: false,
             modalalert: false,
             nombre:'',
             descripcion:'',
@@ -29,7 +31,8 @@ class AdmCategorias extends Component {
             fileimg: null,
             uploadValue: 0,
             nompicture: "Ningun archivo seleccionado",
-            limpiar:false
+            limpiar:false,
+            categoria:null
         };
     }
     componentDidMount() {
@@ -48,12 +51,14 @@ class AdmCategorias extends Component {
                     key: categoria.id,
                     nombre: categoria.nombre,
                     descripcion: categoria.descripcion,
+                    foto:categoria.foto,
                     check: <Switch
                         key={categoria.id}
                         loading={this.state.loadingCheck}
                         onChange={(switchValue) => this.onChangeCheckCategoria(categoria.id, switchValue)}
                         defaultChecked={categoria.estado}
                     />,
+                    state:categoria
                 });
             }
             this.setState({
@@ -64,7 +69,16 @@ class AdmCategorias extends Component {
         })
     }
 
-
+    CategoriaSeleccionada = (categoria) => {
+        this.setState({
+            picture:categoria.foto,
+            categoria: categoria
+        })
+     //  setTimeout(() => {
+            this.setModalVisibleEdit(true)
+   //}, 1000);
+    }
+ 
     async onChangeCheckCategoria(i, checked){
         this.setState({
             loadingCheck: true
@@ -136,6 +150,9 @@ class AdmCategorias extends Component {
         this.setState({ modalVisible });
     }
 
+    setModalVisibleEdit(modalVisibleEdit) {
+        this.setState({ modalVisibleEdit });
+    }
     setModalAlertVisible(modalalert) {
         this.setState({ modalalert });
     }
@@ -152,13 +169,14 @@ class AdmCategorias extends Component {
         this.setState({
             nombre:'',
             descripcion:'',
-            picture: iconimg,
+         //   picture: iconimg,
             uploadValue:0,
             nompicture: "Ningun archivo seleccionado",
             fileimg: null,
             limpiar:true
         })
-        this.setModalVisible(false)  
+        this.setModalVisible(false) 
+        this.setModalVisibleEdit(false)  
     }
     validarform(){
         if(this.state.nombre!=''&& this.state.descripcion!='' && this.state.fileimg!=null ){
@@ -226,6 +244,8 @@ class AdmCategorias extends Component {
                                 onSelectChange={this.onSelectChangeCategoria}
                                 data_categoria={this.state.data_categoria}
                                 loadingTable={this.state.loadingTable}
+                                CategoriaSeleccionada={this.CategoriaSeleccionada}
+                                state={this.state}
                             />
                         </TabPane>
                     </Tabs>
@@ -255,6 +275,20 @@ class AdmCategorias extends Component {
                     onCancel={() => this.setModalAlertVisible(false)}
                 >
                   <div>Si eliminas esta categoria también se eliminarán los servicios relacionados</div>
+                </Modal>
+
+                <Modal
+                    className="modal"
+                    title="Editar Categoría"
+                    centered
+                    visible={this.state.modalVisibleEdit}
+                    okText="Guardar"
+                    cancelText="Cancelar"
+                    closable={false}
+                    onOk={() => this.guardarcategoria()}
+                    onCancel={() => this.limpiarformcategoria()}
+                >
+                    <EditarCategoria param={this.state}  handleChangeimg={this.handleChangeimg}/>
                 </Modal>
             </>
         );

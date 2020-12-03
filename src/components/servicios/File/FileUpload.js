@@ -67,7 +67,7 @@ class FileUpload extends React.Component {
                     ValidarExtension(false, "error")
                     this.setState({
                         uploadValue: 0,
-                        picture: iconimg,
+                       picture: iconimg,
                         nompicture: file.name,
                         file:null
                     });
