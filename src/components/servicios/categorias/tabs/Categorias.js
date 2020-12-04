@@ -20,13 +20,7 @@ class Categorias extends Component {
             < >
                 <div>
                     <Table
-                        onRow={(editar) => {
-                            return {
-                                onClick: event => {
-                                this.props.CategoriaSeleccionada(editar)
-                                }
-                            }
-                        }}
+                      
                         loading={this.props.loadingTable}
                         rowSelection={{
                             type: "checkbox",
@@ -48,6 +42,15 @@ class Categorias extends Component {
                             },
                           
                         ]}
+                        onRow={(editar) => {
+                            
+                            return {
+                                
+                                onDoubleClick: event => { 
+                                this.props.CategoriaSeleccionada(editar)
+                                }
+                            }
+                        }}
                         dataSource={this.props.data_categoria} />
                 </div>
             </>

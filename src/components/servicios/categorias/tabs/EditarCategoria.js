@@ -70,6 +70,7 @@ React.useEffect(() => {
             className="form"
           >
           <FileCategoria param={param}  handleChangeimg={handleChangeimg}  />
+         
           </Form.Item>
       </Form>
       </div>

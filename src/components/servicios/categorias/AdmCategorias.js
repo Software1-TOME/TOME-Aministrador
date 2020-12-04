@@ -34,8 +34,8 @@ class AdmCategorias extends Component {
             limpiar:false,
             limpiarEdit:false,
             categoria:null,
-            nombreE:'',
-            descripcionE:'',
+            nombre0:'',
+            descripcion0:'',
         };
     }
     componentDidMount() {
@@ -157,16 +157,11 @@ class AdmCategorias extends Component {
           fileimg: fileimg
         });
     }
-    limpiarCategoriaElegida(){
-            this.setState({
-                categoria:null
-            })
-        
-    }
+
     limpiarformcategoria(){
         this.setState({
-            nombre:'',
-            descripcion:'',
+            nombre0:'',
+            descripcion0:'',
             picture: iconimg,
             uploadValue:0,
             nompicture: "Ningun archivo seleccionado",
@@ -187,17 +182,19 @@ class AdmCategorias extends Component {
         })
     }
     validarform(){
-        if(this.state.nombre!==''&& this.state.descripcion!=='' && this.state.fileimg!==null ){
-            console.log("hola")
+        if(this.state.nombre0!==''&& this.state.descripcion0!=='' && this.state.fileimg!==null ){
+            
             return true
         }
-        if(this.state.nombre===''){
-            ValidarTexto(false,'errornombre')
+        if(this.state.nombre0===''){
+            ValidarTexto(false,'errornombre0')
         }
-        if(this.state.descripcion===''){
-            ValidarTexto(false,'errordescripcion')
+        if(this.state.descripcion0===''){
+            ValidarTexto(false,'errordescripcion0')
         }
         if(this.state.fileimg===null){
+            console.log("hola")
+           
             ValidarTexto(false,'errorfoto')
         }
         return false
@@ -218,8 +215,8 @@ class AdmCategorias extends Component {
     async guardarcategoria(){
         if(this.validarform()){
         var data = new FormData();
-        data.append('nombre', this.state.nombre);
-        data.append('descripcion', this.state.descripcion);
+        data.append('nombre', this.state.nombre0);
+        data.append('descripcion', this.state.descripcion0);
         data.append('foto', this.state.fileimg);
         await MetodosAxios.crear_categoria(data).then(res => {
             console.log(res)
@@ -255,9 +252,10 @@ class AdmCategorias extends Component {
            this.setModalVisible(false)
        }
     AgregarCategoria() {
-      //  this.limpiarCategoriaElegida()
       this.limpiarformcategoria() 
       console.log("nombre",this.state.nombre) 
+      console.log("descripcion",this.state.descripcion) 
+      console.log("img",this.state.fileimg) 
       this.setModalVisible(true)
    }
 
@@ -284,7 +282,7 @@ class AdmCategorias extends Component {
                             type="text"
                             shape="circle"
                             size="small"
-                            icon={<Icon component={() => (<img id="agregarimgButton" alt="icono eliminar" src={Agregar} />)} />}
+                            icon={<Icon component={() => (<img id="agregarimgButton" alt="icono agregar" src={Agregar} />)} />}
                             onClick={() => { this.AgregarCategoria()}}
                         />
                         <Search
