@@ -8,6 +8,7 @@ import Eliminar from "../../../img/icons/eliminar.png";
 import Icon from '@ant-design/icons';
 import {ValidarTexto} from '../Validacion/validaciones'
 import "./AdmSubCategorias.css"
+import EditarSubCategoria from './tabs/EditarSubCategoria'
 const { TabPane } = Tabs;
 const { Search } = Input;
 class AdmSubCategorias extends Component {
@@ -23,10 +24,17 @@ class AdmSubCategorias extends Component {
             loadingTable: false,
             loadingCheck: false,
             loadingcategorias:true,
+            key:'',
             modalVisible: false,
+            modalVisibleEdit: false,
+            modalalert: false,
             nombre:'',
             descripcion:'',
-            key:''
+            limpiar:false,
+            limpiarEdit:false,
+            categoria:null,
+            nombre0:'',
+            descripcion0:'',
         };
     }
     componentDidMount() {
@@ -87,7 +95,7 @@ class AdmSubCategorias extends Component {
         this.setState({
             loadingCheck: true
         })
-        await MetodosAxios.cambio_subcategoria_estado({ 'estado': checked }, i).then(res => {
+        await MetodosAxios.cambio_subcategoria_update({ 'estado': checked }, i).then(res => {
             console.log(res)
         })
         this.setState({
@@ -166,6 +174,7 @@ class AdmSubCategorias extends Component {
                  onSelectChange={this.onSelectChangesubCategoria}
                  data_subcategoria={servicios}
                  loadingTable={this.state.loadingTable}
+                 SubCategoriaSeleccionada={this.EditarSubCategoria}
              />
          </TabPane>
           })
@@ -173,34 +182,94 @@ class AdmSubCategorias extends Component {
     setModalVisible(modalVisible) {
         this.setState({ modalVisible });
     }
+    setModalVisibleEdit(modalVisibleEdit) {
+        this.setState({ modalVisibleEdit });
+    }
     limpiarformsubcategoria(){
-        this.setState({nombre:'',descripcion:''})
+        this.setState({nombre0:'',descripcion0:''})
         this.setModalVisible(false)
     }
     validarform(){
-        if(this.state.nombre!=''&& this.state.descripcion!='' ){
+        if(this.state.nombre0!='' ){
             return true
         }
-        if(this.state.nombre==''){
+        if(this.state.nombre0==''){
+            ValidarTexto(false,'errornombre0')
+        }
+      /*  if(this.state.descripcion0==''){
+            ValidarTexto(false,'errordescripcion0')
+        }*/
+        return false
+    }
+    validarformEdit(){
+        if(this.state.nombre!==''){
+            return true
+        }
+        if(this.state.nombre===''){
             ValidarTexto(false,'errornombre')
         }
-        if(this.state.descripcion==''){
+  /*      if(this.state.descripcion===''){
             ValidarTexto(false,'errordescripcion')
-        }
+        }*/
         return false
     }
     async guardarsubcategoria(){
         if(this.validarform()){
         var data = new FormData();
-        data.append('nombre', this.state.nombre);
-        data.append('descripcion', this.state.descripcion);
+        data.append('nombre', this.state.nombre0);
+        data.append('descripcion', this.state.descripcion0);
         data.append('categoria', this.state.key);
         await MetodosAxios.crear_subcategoria(data).then(res => {
             console.log(res)
         })
         this.llenarTablaSubCategoria();
-        this.limpiarformsubcategoria()
+        this.CerrarAgregar()
         }
+    }
+    async guardarEditsubcategoria(){
+        if(this.validarformEdit()){
+        var data = new FormData();
+        data.append('nombre', this.state.nombre);
+        data.append('descripcion', this.state.descripcion);
+        await MetodosAxios.cambio_subcategoria_update(data, this.state.categoria.key).then(res => {
+            console.log(res)
+        })
+        this.llenarTablaSubCategoria();
+        this.CerrarEdit()
+        }
+    }
+    CerrarEdit() {
+        this.limpiarformsubcategoriaEdit()
+         this.setModalVisibleEdit(false)
+     }
+     CerrarAgregar() {
+          this.limpiarformsubcategoria()
+            this.setModalVisible(false)
+        }
+        AgregarsubCategoria() {
+            this.limpiarformsubcategoria() 
+            console.log("nombre",this.state.nombre) 
+          //  console.log("descripcion",this.state.descripcion) 
+            this.setModalVisible(true)
+         }
+    EditarSubCategoria = (categoria) => {
+        this.limpiarformsubcategoriaEdit()
+        console.log(this.state.categoria)
+        this.setState({
+            categoria: categoria,
+            nombre:categoria.nombre,
+            descripcion:categoria.descripcion
+        })
+        console.log(categoria.nombre)
+        this.setModalVisibleEdit(true)
+    }
+
+    limpiarformsubcategoriaEdit(){
+        this.setState({
+            nombre:'',
+            descripcion:'',
+            limpiarEdit:true,
+        })
     }
     render() {
 
@@ -215,7 +284,7 @@ class AdmSubCategorias extends Component {
                             shape="circle"
                             size="small"
                             icon={<Icon component={() => (<img id="agregarimgButton" alt="icono eliminar" src={Agregar} />)} />}
-                            onClick={() => {   this.setModalVisible(true)}}
+                            onClick={() => {   this.AgregarsubCategoria(true)}}
                         />
                         <Search
                             placeholder="Buscar"
@@ -246,9 +315,22 @@ class AdmSubCategorias extends Component {
                     cancelText="Cancelar"
                     closable={false}
                     onOk={() => this.guardarsubcategoria()}
-                    onCancel={() => this.limpiarformsubcategoria()}
+                    onCancel={() => this.CerrarAgregar()}
                 >
                     <AgregarSubCategoria param={this.state}/>
+                </Modal>
+                <Modal
+                    className="modal"
+                    title="Editar Sub-Categoría"
+                    centered
+                    visible={this.state.modalVisibleEdit}
+                    okText="Guardar"
+                    cancelText="Cancelar"
+                    closable={false}
+                    onOk={() => this.guardarEditsubcategoria()}
+                    onCancel={() => this.CerrarEdit()}
+                >
+                    <EditarSubCategoria param={this.state} />
                 </Modal>
             </>
         );

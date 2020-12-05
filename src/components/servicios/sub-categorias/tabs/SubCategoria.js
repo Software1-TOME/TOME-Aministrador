@@ -35,6 +35,15 @@ class SubCategorias extends Component {
                             },
                           
                         ]}
+                        onRow={(editar) => {
+                            
+                            return {
+                                
+                                onDoubleClick: event => { 
+                                this.props.SubCategoriaSeleccionada(editar)
+                                }
+                            }
+                        }}
                         dataSource={this.props.data_subcategoria} />
                 </div>
             </>

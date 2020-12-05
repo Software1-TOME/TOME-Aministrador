@@ -164,9 +164,9 @@ export default class MetodosAxios {
     descripccion: Cambia estado de una subcategoria
     parametros: boolean estado, int id
   */
- static cambio_subcategoria_estado = (estado, id) => {
+ static cambio_subcategoria_update = (estado, id) => {
   console.log(estado, id)
-  return MetodosAxios.instanceAxios.put(`/servicios_estado/${id}`, estado)
+  return MetodosAxios.instanceAxios.put(`/servicios_update/${id}`, estado)
 };
 /*
     eliminar_subcategoria

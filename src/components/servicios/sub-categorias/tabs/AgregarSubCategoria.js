@@ -15,13 +15,13 @@ const AgregarCategoria =(props) => {
       }
 
 const handleChangenombre=(event)=> {
-  param.nombre=event.target.value
-  var nombre = document.getElementById("errornombre");
+  param.nombre0=event.target.value
+  var nombre = document.getElementById("errornombre0");
   if (nombre) nombre.textContent = ""
 }
 const handleChangedescripcion=(event)=> {
-  param.descripcion=event.target.value
-  var descripcion = document.getElementById("errordescripcion");
+  param.descripcion0=event.target.value
+  var descripcion = document.getElementById("errordescripcion0");
   if (descripcion) descripcion.textContent = ""
 }
 const handleSubmitted = () => {
@@ -39,20 +39,22 @@ const handleSubmitted = () => {
           >
             <Input initialValues="" className="input"  onChange={value=>{handleChangenombre(value)}} />
           <div className="Registroerror-div">
-            <label className="error" id="errornombre"></label>
+            <label className="error" id="errornombre0"></label>
           </div>
           </Form.Item>
           
-          <Form.Item 
+      {/*    <Form.Item 
             name="descripcion"
             label="Descripcion"
             className="form"
           >
             <Input.TextArea initialValues="" className="input2" rows="7"  onChange={value=>{handleChangedescripcion(value)}} />
             <div className="Registroerror-div">
-              <label className="error" id="errordescripcion"></label>
+              <label className="error" id="errordescripcion0"></label>
             </div>
           </Form.Item>
+
+      */}
       </Form>
       </div>
     </>
