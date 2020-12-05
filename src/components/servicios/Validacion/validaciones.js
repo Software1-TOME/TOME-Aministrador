@@ -1,4 +1,4 @@
-const msgTextofoto= "Error: Formato no permitido { usar: .jpg .png jfif }";
+const msgTextofoto= "Error: Formato no permitido { usar: .jpg .jpeg .png jfif }";
 const msgTexto = "Error: Dato requerido.";
 
 export async function ValidarExtension(texto, component) {

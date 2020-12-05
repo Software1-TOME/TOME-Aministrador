@@ -43,7 +43,7 @@ class FileUpload extends React.Component {
                 if (fechac) fechac.textContent = ""
                 let ext=extension[extension.length-1]
                 ext=ext.toLowerCase()
-                if(ext==='jpg'|| ext==='png' || ext==='jfif'){
+                if(ext==='jpg'|| ext==='png' || ext==='jfif' || ext==='jpeg'){
                     console.log("extension valida")
                     const reader=new FileReader();
                     reader.onload=()=>{
