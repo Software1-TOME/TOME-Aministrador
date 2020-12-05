@@ -193,8 +193,6 @@ class AdmCategorias extends Component {
             ValidarTexto(false,'errordescripcion0')
         }
         if(this.state.fileimg===null){
-            console.log("hola")
-           
             ValidarTexto(false,'errorfoto')
         }
         return false
@@ -261,8 +259,9 @@ class AdmCategorias extends Component {
 
    EditarCategoria = (categoria) => {
     this.limpiarformcategoriaEdit()
+    console.log(this.state.categoria)
     this.setState({
-        picture:categoria.foto,
+        picture:'https://tomesoft1.pythonanywhere.com/'+categoria.foto,
         categoria: categoria,
         nombre:categoria.nombre,
         descripcion:categoria.descripcion
