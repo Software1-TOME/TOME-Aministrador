@@ -66,6 +66,8 @@ export async function getProveedor(proveedor, count) {
         estado: licencia,
         fecha_creacion: fecha,
         profesion: profesion,
+        ano_experiencia: proveedor.ano_experiencia,
+        profesionesPasadas:null,
         //cuentas: accounts,
 
     }
@@ -132,3 +134,4 @@ export function copy(obj){
     }
     return copy_dic;
 }
+

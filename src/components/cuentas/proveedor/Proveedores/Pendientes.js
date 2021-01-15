@@ -3,6 +3,7 @@ import { Table} from 'antd';
 import SelectedContext from '../../../../context/SelectedContext'
 import {copy} from '../functions'
 import './pendientes.css'
+import { getProfesiones} from '../functions';
 
 const columns = [
     { title: '', dataIndex: 'count', className: 'columns-pendientes-1' },
@@ -13,14 +14,21 @@ const columns = [
 
 const Pendientes =(props)=>{
     
-    const {setShow, setSelected}= useContext(SelectedContext)
+    const {setShow, setSelected,setprofesionesPrevias}= useContext(SelectedContext)
 
-    const showInfo=(user)=>{
+    const showInfo=async (user)=>{
         console.log(user.nombres)
         let copy_user = copy(user)  
         setSelected(copy_user)
+        setprofesionesPrevias(await getprofesionPrevias(copy_user))
         setShow(true)
     };
+    const getprofesionPrevias =(proveedor) =>{
+        let profesion =  getProfesiones(proveedor.email).then((resultado) => {
+            return resultado;
+        });
+        return profesion
+    }
     
         return (
             <div className="container-pendientes">

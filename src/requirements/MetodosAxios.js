@@ -195,4 +195,23 @@ export default class MetodosAxios {
  static crear_subcategoria(data) {
   return MetodosAxios.instanceAxios.post(`/servicios/`,data)
 };
+/*
+    crear_profesiones_proveedor
+    autor: lilibeth
+    descripccion: crea una profesion a un proveedor
+    parametros: user
+  */
+
+static crear_profesiones_proveedor(user,data){
+  return MetodosAxios.instanceAxios.post(`/proveedor_profesiones/${user}`,data)
+};
+/*
+    eliminar proveedor pendiente
+    autor: lilibeth
+    descripccion: elimina proveedor pendiente
+    parametros: user
+  */
+static eliminar_proveedores_pendientes = (user) => {
+  return MetodosAxios.instanceAxios.delete(`/proveedores_pendientes/${user}`)
+}
 }

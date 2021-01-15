@@ -1,7 +1,7 @@
 import React, { Component, } from "react";
 import { Input, Tabs, Button, Modal } from 'antd';
 import MetodosAxios from "../../../requirements/MetodosAxios";
-import { get_Pendientes, getProveedor } from './functions';
+import { get_Pendientes, getProveedor, getProfesiones} from './functions';
 import Pendientes from "./Proveedores/Pendientes";
 import { EditOutlined } from '@ant-design/icons';
 import './Proveedor.css'
@@ -32,6 +32,9 @@ class Proveedor extends Component {
             loading_pendientes: false,
             created: false,
             failed: false,
+            addservicio:false,
+            faileservicio:false,
+            rechazo:false,
             sent: false,
             creado: {},
             success: false,
@@ -64,6 +67,13 @@ class Proveedor extends Component {
         }
     }
 
+    async profesiones_Pendientes(_pendiente) {
+        if(_pendiente.estado=='Activa'){
+            let _profesiones_proveedor = await getProfesiones(_pendiente.email)
+            _pendiente.profesionesPasadas=_profesiones_proveedor
+        }
+        return _pendiente 
+    }
 
     async load_Pendientes() {
         this.setState({ loading_pendientes: true })
@@ -72,6 +82,7 @@ class Proveedor extends Component {
         let count = 1;
         for (let pendiente of value.data) {
             let _pendiente = await get_Pendientes(pendiente, count)
+           // this.profesiones_Pendientes(_pendiente)
             pendientes.push(_pendiente);
             count++;
         }
@@ -106,8 +117,7 @@ class Proveedor extends Component {
     getAllchangedValued(proveedor) {
         const { nombres, apellidos, telefono,
             cedula, numero_cuenta, banco,
-            tipo_cuenta, email, profesion } = this.context
-
+            tipo_cuenta, email, profesion} = this.context
         let data = {
             proveedor_id: proveedor.proveedor_id,
             pendiente_id: proveedor.pendiente_id,
@@ -189,17 +199,50 @@ class Proveedor extends Component {
 
     handleOk = (e) => {
         const { selected, setShow, reset, setShowEdit } = this.context
-
+       
         try {
-            //console.log(selected)
+            console.log(selected)
             if (selected.valid_profesion) {
+                 //
+                 let profesiones=getProfesiones(selected.email)
+
+                if (profesiones!=""&&selected.estado=="Activa") {
+                    console.log("proveedor ya tiene las siguientes profesiones")
+                    console.log(profesiones)
+                    let data={
+                        "profesion": selected.profesion,
+                        "ano_experiencia":selected.ano_experiencia}
+                    
+                    MetodosAxios.crear_profesiones_proveedor(selected.email,data).then(value => {
+                        let datos = value.data;
+                        if (datos) {
+                            MetodosAxios.eliminar_proveedores_pendientes(selected.email).then(value1 => {
+                                
+                                    this.setState({ addservicio: true })
+                                   
+                                    let addservicio = {
+                                        password: datos.password,
+                                        email: datos.username
+                                    }
+                                    this.setState({ addservicio: addservicio, is_changed: true })
+                                
+                                
+                          })
+                        } else {
+                            this.setState({ faileservicio: true, error_msg: datos.error })
+                            
+                            console.log(datos.code)
+                        }
+                    })
+                   
+                }else{
+              //
                 let data = selected;
                 MetodosAxios.register_proveedor(data).then(value => {
                     let datos = value.data;
                     if (datos.success) {
                         this.setState({ created: true })
-                        setShow(false)
-                        setShowEdit(false)
+                     
                         let creado = {
                             password: datos.password,
                             email: datos.username
@@ -207,40 +250,77 @@ class Proveedor extends Component {
                         this.setState({ creado: creado, is_changed: true })
                     } else {
                         this.setState({ failed: true, error_msg: datos.error })
-                        setShow(false)
+                        
                         console.log(datos.code)
                     }
                 })
-                reset()
-            } else {
-                this.setState({ failed: true, error_msg: 'La profesion no está registrada' })
-                reset()
+
             }
+            setShow(false)
+            setShowEdit(false)
+        } else {
+            this.setState({ failed: true, error_msg: 'La profesion no está registrada' })
+        } reset()
         } catch (e) {
             this.setState({ failed: true })
             setShow(false)
             reset()
         }
+    
     };
 
     handleCancel = e => {
-        const { setShow, setShowEdit, setSelected, setEdit, reset } = this.context
-        setShow(false)
-        setShowEdit(false)
-        setSelected({})
-        setEdit({})
-
-        this.setState({
-            created: false,
-            failed: false,
-            sent: false,
-            confirmEdit: false,
-            updated: false,
-        });
-
-        reset()
+        const { setShow, setShowEdit, setSelected,setEdit, reset } = this.context
+            setShow(false)
+            setShowEdit(false)
+            setSelected({})
+            setEdit({})
+            
+            this.setState({
+                created: false,
+                addservicio:false,
+                faileservicio:false,
+                failed: false,
+                sent: false,
+                confirmEdit: false,
+                updated: false,
+                is_changed:true,
+                rechazo:false
+            });
+        
+            reset()
+        
     }
 
+    handleRechazo = e => {
+        const { setShow, setShowEdit, setSelected,selected, setEdit, reset } = this.context
+        MetodosAxios.eliminar_proveedores_pendientes(selected.email).then(value => {
+            setShow(false)
+            setShowEdit(false)
+            setSelected({})
+            setEdit({})
+            
+            this.setState({
+                created: false,
+                addservicio:false,
+                faileservicio:false,
+                failed: false,
+                sent: false,
+                confirmEdit: false,
+                updated: false,
+                rechazo:true,
+            });
+        
+            reset()
+    })
+    reset()
+        
+    }
+
+    handleAceptAddServicio = (e) => { 
+        this.setState({ addservicio: false })
+
+    }
 
     handleSendEmail = (e) => {
         try {
@@ -279,6 +359,8 @@ class Proveedor extends Component {
 
         this.setState({
             created: false,
+            addservicio:false,
+            faileservicio:false,
             failed: false,
             sent: false,
             confirmEdit: false,
@@ -395,7 +477,7 @@ class Proveedor extends Component {
                                     <Button key="accept" onClick={this.handleOk} className="button-modal" ghost={true}>
                                         <img className="icon" src={aceptar} alt="Aceptar"></img>
                                     </Button>
-                                    <Button key="cancel" onClick={this.handleCancel} ghost={true}>
+                                    <Button key="cancel" onClick={this.handleRechazo} ghost={true}>
                                         <img className="icon" src={rechazar} alt="Rechazar" />
                                     </Button>
                                 </div>
@@ -466,6 +548,70 @@ class Proveedor extends Component {
                                 </div>
                                 <div className="detail">
                                     <h3 className="msg-detail">Se guardarán los cambios realizados</h3>
+                                </div>
+                            </div>
+                        </Modal>
+                        {/**SUCCESS Servicio */}
+                        <Modal
+                            key="modal-succes"
+                            visible={this.state.addservicio}
+                            width={520}
+                            onCancel={this.handleAceptAddServicio}
+                            footer={[
+                                <div className="footer">
+                                    <Button key="accept" onClick={this.handleAceptAddServicio} className="button-request"
+                                        style={{ background: '##052434' }} size="large">
+                                        Aceptar
+                            </Button>
+                                </div>
+                            ]}>
+                            <div className="msg-container">
+                                <div className="success-msg">
+                                    <h3 className="msg-text">Se ha agregado el servicio al proveedor con exito</h3>
+                                </div>
+                            </div>
+                        </Modal>
+                        {/**FAILED Servicio */}
+                        <Modal
+                            key="modal-failed"
+                            visible={this.state.faileservicio}
+                            width={350}
+                            onCancel={this.handleCancel}
+                            footer={[
+                                <div className="footer">
+                                    <Button key="rechazo" onClick={this.handleCancel} className="button-request">
+                                        Aceptar
+                            </Button>
+                                </div>
+                            ]}>
+                            <div className="msg-container">
+                                <div className="success-msg">
+                                    <h3 className="msg-text">No se pudo agregar el sevicio al proveedor</h3>
+                                </div>
+                                <div className="detail">
+                                    <h3 className="msg-detail">{this.state.error_msg}</h3>
+                                </div>
+                            </div>
+                        </Modal>
+                        {/**Rechazado */}
+                        <Modal
+                            key="modal-failed"
+                            visible={this.state.rechazo}
+                            width={350}
+                            onCancel={this.handleCancel}
+                            footer={[
+                                <div className="footer">
+                                    <Button key="rechazo" onClick={this.handleCancel} className="button-request">
+                                        Aceptar
+                            </Button>
+                                </div>
+                            ]}>
+                            <div className="msg-container">
+                                <div className="success-msg">
+                                    <h3 className="msg-text">Se ha rechazado la perticion</h3>
+                                </div>
+                                <div className="detail">
+                                    <h3 className="msg-detail">{this.state.error_msg}</h3>
                                 </div>
                             </div>
                         </Modal>

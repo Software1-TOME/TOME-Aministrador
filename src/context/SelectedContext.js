@@ -19,11 +19,15 @@ class SelectedProvider extends Component {
         tipo_cuenta: "",
         numero_cuenta: "",
         profesion: "",
+        profesionesPrevias:"",
     }
 
 
     setSelected = (selected) => {
         this.setState({ selected: selected })
+    }
+    setprofesionesPrevias = (profesionesPrevias) => {
+        this.setState({ profesionesPrevias: profesionesPrevias })
     }
 
     setShow = (show) => {
@@ -86,6 +90,7 @@ class SelectedProvider extends Component {
             tipo_cuenta: "",
             numero_cuenta: "",
             profesion: "",  
+            profesionesPrevias:""
         })
     }
 
@@ -95,11 +100,11 @@ class SelectedProvider extends Component {
         const { children } = this.props
         const { selected, show, edited, showEdit, nombres,
             apellidos, ciudad, telefono, cedula, numero_cuenta,
-            banco, tipo_cuenta, email, profesion } = this.state
+            banco, tipo_cuenta, email, profesion,profesionesPrevias} = this.state
         const { setSelected, setShow, setEdit, setShowEdit, setNombres,
             setApellidos, setEmail, setTelefono,
             setCiudad, setCedula, setTipoCuenta, setNumCuenta,
-            setProfesion, setBanco, reset } = this
+            setProfesion,setprofesionesPrevias, setBanco, reset } = this
 
         return (
             <SelectedContext.Provider
@@ -108,13 +113,14 @@ class SelectedProvider extends Component {
                     showEdit, nombres,
                     apellidos, ciudad, telefono,
                     cedula, numero_cuenta,
-                    banco, tipo_cuenta, email, profesion,
+                    banco, tipo_cuenta, email, profesion,profesionesPrevias,
                     setShow, setSelected, setEdit, 
                     setShowEdit, setNombres,
                     setApellidos, setEmail, 
                     setTelefono, setCiudad, 
                     setCedula, setTipoCuenta, 
-                    setNumCuenta, setProfesion, 
+                    setNumCuenta, setProfesion,
+                    setprofesionesPrevias, 
                     setBanco, reset
                 }}>
                 {children}
