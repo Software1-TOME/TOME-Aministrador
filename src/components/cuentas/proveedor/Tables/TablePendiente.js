@@ -7,34 +7,18 @@ import { getProfesiones} from '../functions';
 const TablePendiente = (props) => {
     const { selected,profesionesPrevias } = useContext(SelectedContext)
     const API_URL = 'http://tomesoft1.pythonanywhere.com'
-    let profesiones
-    let boo=false
-    React.useEffect( async() => {
-       // profesiones= await getprofesionPrevias(selected)
-        //console.log(profesiones)
-      },[]);
-
-
 
     const getNombre = (proveedor) => {
         if (!proveedor) return ""
         return proveedor.nombres + " " + proveedor.apellidos;
     }
-    const getprofesionPrevias =(proveedor) =>{
-        let profesion =  getProfesiones(proveedor.email).then((resultado) => {
-            return resultado;
-        });
-        boo=true
-        return profesion
-    }
     
-
     const getDocuments = (proveedor) => {
         let documents = proveedor.document;
         try{
             return documents.map((doc, i) => {
                 return (
-                    !doc.estado &&
+                    !doc.estado &&doc.descripcion.split("&")[1]==selected.profesion&&
                     <div className="document-container" key={"pendiente-doc-proveedor-"+proveedor.id}>
                         <a href={API_URL + doc.documento} target="_blank" className="document-link" rel="noreferrer">
                             <Button key="accept" onClick={() => { }}

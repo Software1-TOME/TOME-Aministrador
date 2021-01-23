@@ -213,10 +213,14 @@ class Proveedor extends Component {
                         "profesion": selected.profesion,
                         "ano_experiencia":selected.ano_experiencia}
                     
+                    
                     MetodosAxios.crear_profesiones_proveedor(selected.email,data).then(value => {
                         let datos = value.data;
                         if (datos) {
-                            MetodosAxios.eliminar_proveedores_pendientes(selected.email).then(value1 => {
+                            let datadoc=`${selected.email}&${selected.profesion}|true`
+                         
+                            console.log(datadoc)
+                            MetodosAxios.eliminar_proveedores_pendientes(selected.email,datadoc).then(value1 => {
                                 
                                     this.setState({ addservicio: true })
                                    
@@ -294,7 +298,8 @@ class Proveedor extends Component {
 
     handleRechazo = e => {
         const { setShow, setShowEdit, setSelected,selected, setEdit, reset } = this.context
-        MetodosAxios.eliminar_proveedores_pendientes(selected.email).then(value => {
+        let datadoc=`${selected.email}&${selected.profesion}|false`
+        MetodosAxios.eliminar_proveedores_pendientes(selected.email,datadoc).then(value => {
             setShow(false)
             setShowEdit(false)
             setSelected({})

@@ -211,7 +211,7 @@ static crear_profesiones_proveedor(user,data){
     descripccion: elimina proveedor pendiente
     parametros: user
   */
-static eliminar_proveedores_pendientes = (user) => {
-  return MetodosAxios.instanceAxios.delete(`/proveedores_pendientes/${user}`)
+static eliminar_proveedores_pendientes = (user,data) => {
+  return MetodosAxios.instanceAxios.delete(`/proveedores_pendientes/${user}/${data}`)
 }
 }
