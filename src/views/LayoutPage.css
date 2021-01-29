@@ -38,6 +38,11 @@
       color:rgba(10,68,91) !important;
     }
 
+    #menu-item-only{
+      font-weight: bold ;
+      color:rgba(10,68,91);
+    }
+
     .ant-menu-submenu-title{
       font-weight: bold ;
       color:rgba(10,68,91);

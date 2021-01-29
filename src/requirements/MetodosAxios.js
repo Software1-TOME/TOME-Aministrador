@@ -87,26 +87,66 @@ export default class MetodosAxios {
     return MetodosAxios.instanceAxios.delete(`/administrador_delete/${id}`)
   };
 
+  /*
+    obtener_proveedores
+    autor: Kelly
+    descripccion: Obtiene todas las proveedores
+    parametros: None
+  */
   static obtener_proveedores = () => {
     return MetodosAxios.instanceAxios.get("/proveedores/")
   }
 
+  /*
+    obtener_proveedores_pendientes
+    autor: Kelly
+    descripccion: Obtiene todas las proveedores pendientes
+    parametros: None
+  */
   static obtener_proveedores_pendientes = () => {
     return MetodosAxios.instanceAxios.get("/proveedores_pendientes/")
   }
 
+  /*
+    obtener_cuenta_proveedor
+    autor: Kelly
+    descripccion: Obtiene las de los proveedores
+    parametros: el id del proveedor
+  */
+
   static obtener_cuenta_proveedor = (proveedorID) => {
     return MetodosAxios.instanceAxios.get(`/cuenta_proveedor/${proveedorID}`)
   }
+
+  /*
+    register_proveedor
+    autor: Kelly
+    descripccion: Obtiene todas las proveedores
+    parametros: diccionario con los campos necesarios
+  */
 
   static register_proveedor(data) {
     let url = '/register_proveedor/'
     return MetodosAxios.instanceAxios.post(url, data)
   }
 
+  /*
+    obtener_profesiones
+    autor: Kelly
+    descripccion: Obtiene todas las profesiones de los proveedores
+    parametros: usuario
+  */
+
   static obtener_profesiones(user) {
     return MetodosAxios.instanceAxios.get(`/proveedor_profesiones/${user}`)
   }
+
+  /*
+    enviar_email
+    autor: Kelly
+    descripccion: envia email a los proveedores pendientes aceptados
+    parametros: data
+  */
 
   static enviar_email(data) {
     return MetodosAxios.instanceAxios.post('/email/', data)
@@ -214,4 +254,54 @@ static crear_profesiones_proveedor(user,data){
 static eliminar_proveedores_pendientes = (user,data) => {
   return MetodosAxios.instanceAxios.delete(`/proveedores_pendientes/${user}/${data}`)
 }
+
+  /*
+    obtener_promociones
+    autor: Kelly
+    descripccion: Obtiene todas las promociones registradas en la base de datos
+    parametros: None
+  */
+
+  static obtener_promociones = ()=>{
+    return MetodosAxios.instanceAxios.get('/promociones/');
+  }
+
+
+  static obtener_grupos=()=>{
+    return MetodosAxios.instanceAxios.get('/grupos/')
+  }
+
+  /*
+    crear_promocion
+    autor: Kelly
+    descripccion: Crea una nueva promocion
+    parametros: data
+  */
+
+  static crear_promocion=(data)=>{
+    return MetodosAxios.instanceAxios.post('/promociones/', data)
+  }
+
+
+  /*
+    crear_promocion
+    autor: Kelly
+    descripccion: Crea una nueva promocion
+    parametros: data
+  */
+
+ static actualizar_promocion=(data)=>{
+  return MetodosAxios.instanceAxios.put('/promociones/', data)
+}
+
+  /*
+    obtener_ctgprom
+    autor: Kelly
+    descripccion: Retorna todas las categorias asignadas a una promocion
+    parametros: codigo de la promocion
+  */
+
+  static obtener_ctgprom =(promCode)=>{
+    return MetodosAxios.instanceAxios.get(`/promcategorias/${promCode}`)
+  }
 }
