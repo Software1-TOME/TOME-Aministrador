@@ -44,6 +44,7 @@ class Proveedor extends Component {
             contexto: context,
             confirmEdit: false,
             updated: false, 
+            showSolicitudes:false,
         };
     }
 
@@ -51,7 +52,6 @@ class Proveedor extends Component {
         this.load_proveedores();
         this.load_Pendientes();
     }
-
 
     componentDidUpdate(prevProps, prevState) {
         if (this.state.is_changed !== prevState.is_changed) {
@@ -153,8 +153,6 @@ class Proveedor extends Component {
         setShowEdit(true)
         setShow(false)
     }
-
-
 
     handleSaveEdit = (e) => {
         this.handleUpdateData()
@@ -289,7 +287,8 @@ class Proveedor extends Component {
                 confirmEdit: false,
                 updated: false,
                 is_changed:true,
-                rechazo:false
+                rechazo:false,
+                showSolicitudes:false
             });
         
             reset()
@@ -376,10 +375,6 @@ class Proveedor extends Component {
 
     }
 
-
-
-
-
     onSearch = (value) => {
         this.searchProveedor(value)
         this.searchPendiente(value)
@@ -441,6 +436,23 @@ class Proveedor extends Component {
 
     }
 
+
+    mostrarSolicitudes = (proveedor) => {
+        /*this.limpiarformcategoriaEdit()
+        console.log(this.state.categoria)
+        this.setState({
+            picture:'https://tomesoft1.pythonanywhere.com/'+categoria.foto,
+            categoria: categoria,
+            nombre:categoria.nombre,
+            descripcion:categoria.descripcion
+        })
+        console.log(categoria.nombre)
+        this.setModalVisibleEdit(true)*/
+        this.setState({
+            showSolicitudes:true
+        })
+        console.log(proveedor)
+    }
     render() {
 
         const { show, showEdit } = this.context
@@ -461,7 +473,8 @@ class Proveedor extends Component {
                             <TabPane tab="PROVEEDORES" key="proveedores" >
                                 <Proveedores
                                     proveedores={this.state.proveedores}
-                                    loading={this.state.loading_proveedores} />
+                                    loading={this.state.loading_proveedores} 
+                                    proveedorSeleccionado={this.mostrarSolicitudes}/>
                             </TabPane>
                             <TabPane tab="PENDIENTES" key="pendientes">
                                 <Pendientes
@@ -471,6 +484,32 @@ class Proveedor extends Component {
                         </Tabs>
                     </div>
                     <div>
+                        {/*SHOW DATA SOLICITUDES*/}
+                        <Modal
+                            key="modal-solicitud"
+                            visible={this.state.showSolicitudes}
+                            width={720}
+                            footer={[]}
+                            onCancel={this.handleCancel}
+
+                        >
+                            <div className="modal-container">
+                                <div className="modal-title">
+                                    <h3 className="title">Perfil de proveedor pendiente</h3>
+{}
+                                </div>
+                                <div>
+                                    <h1>tabla</h1>
+                                </div>
+                            </div>
+
+                        </Modal>
+
+
+
+
+
+
                         {/**SHOW DATA */}
                         <Modal
                             key="modal-data"

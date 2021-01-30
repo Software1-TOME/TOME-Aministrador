@@ -16,7 +16,18 @@ const Proveedores = (props) => {
         <div>
             <Table columns={columns}
                 loading={props.loading}
-                dataSource={props.proveedores} />
+                dataSource={props.proveedores} 
+                onRow={(editar) => {
+                            
+                    return {
+                        
+                        onDoubleClick: event => { 
+                        props.proveedorSeleccionado(editar)
+                        }
+                    }
+                }}
+                
+                />
 
         </div>
     )
