@@ -1,7 +1,7 @@
 import React, { Component, } from "react";
-import { Input, Tabs, Button, Modal } from 'antd';
+import { Input, Tabs, Button, Modal,Table} from 'antd';
 import MetodosAxios from "../../../requirements/MetodosAxios";
-import { get_Pendientes, getProveedor, getProfesiones} from './functions';
+import { get_Pendientes, getProveedor, getProfesiones } from './functions';
 import Pendientes from "./Proveedores/Pendientes";
 import { EditOutlined } from '@ant-design/icons';
 import './Proveedor.css'
@@ -14,6 +14,22 @@ import TablePendiente from './Tables/TablePendiente';
 const { TabPane } = Tabs;
 const { Search } = Input;
 
+const columnsSol = [
+    { title: '', dataIndex: 'count', className: 'columns-pendientes-1' },
+    { title: 'Categoría', dataIndex: 'categoria', className: 'columns-pendientes' },
+    { title: 'Sub-Categoría', dataIndex: 'subcategoria', className: 'columns-pendientes' },
+    { title: 'Fecha', dataIndex: 'fecha', className: 'columns-pendientes' },
+    { title: 'Tipo de pago', dataIndex: 'tipoPago', className: 'columns-pendientes' },
+    { title: 'Descuento', dataIndex: 'descuento', className: 'columns-pendientes' },];
+const solicitudes=[
+    {count:1,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
+    {count:2,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
+    {count:3,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
+    {count:4,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
+    {count:5,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
+    {count:6,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
+    {count:7,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
+]
 
 class Proveedor extends Component {
     static contextType = SelectedContex
@@ -32,9 +48,9 @@ class Proveedor extends Component {
             loading_pendientes: false,
             created: false,
             failed: false,
-            addservicio:false,
-            faileservicio:false,
-            rechazo:false,
+            addservicio: false,
+            faileservicio: false,
+            rechazo: false,
             sent: false,
             creado: {},
             success: false,
@@ -43,8 +59,8 @@ class Proveedor extends Component {
             is_changed: false,
             contexto: context,
             confirmEdit: false,
-            updated: false, 
-            showSolicitudes:false,
+            updated: false,
+            showSolicitudes: false,
         };
     }
 
@@ -68,11 +84,11 @@ class Proveedor extends Component {
     }
 
     async profesiones_Pendientes(_pendiente) {
-        if(_pendiente.estado=='Activa'){
+        if (_pendiente.estado == 'Activa') {
             let _profesiones_proveedor = await getProfesiones(_pendiente.email)
-            _pendiente.profesionesPasadas=_profesiones_proveedor
+            _pendiente.profesionesPasadas = _profesiones_proveedor
         }
-        return _pendiente 
+        return _pendiente
     }
 
     async load_Pendientes() {
@@ -82,7 +98,7 @@ class Proveedor extends Component {
         let count = 1;
         for (let pendiente of value.data) {
             let _pendiente = await get_Pendientes(pendiente, count)
-           // this.profesiones_Pendientes(_pendiente)
+            // this.profesiones_Pendientes(_pendiente)
             pendientes.push(_pendiente);
             count++;
         }
@@ -117,7 +133,7 @@ class Proveedor extends Component {
     getAllchangedValued(proveedor) {
         const { nombres, apellidos, telefono,
             cedula, numero_cuenta, banco,
-            tipo_cuenta, email, profesion} = this.context
+            tipo_cuenta, email, profesion } = this.context
         let data = {
             proveedor_id: proveedor.proveedor_id,
             pendiente_id: proveedor.pendiente_id,
@@ -163,21 +179,25 @@ class Proveedor extends Component {
     }
 
     handleUpdateData = () => {
-        const { selected , setShow, setShowEdit, reset} = this.context
+        const { selected, setShow, setShowEdit, reset } = this.context
         try {
             let data = this.getAllchangedValued(selected)
-            const url= 'https://tomesoft1.pythonanywhere.com/update_pendiente/'
-            MetodosAxios.actualizar_pendiente(url,data).then(value=>{
+            const url = 'https://tomesoft1.pythonanywhere.com/update_pendiente/'
+            MetodosAxios.actualizar_pendiente(url, data).then(value => {
                 let datos = value.data;
-                if(datos.success){
-                    this.setState({ is_changed: true, 
+                if (datos.success) {
+                    this.setState({
+                        is_changed: true,
                         confirmEdit: false, updated: true,
-                        msg: "Se ha actualizado la informacion"})
+                        msg: "Se ha actualizado la informacion"
+                    })
                     setShow(false)
                     setShowEdit(false)
-                }else{
-                    this.setState({ failed: true, error_msg: datos.error, 
-                    confirmEdit: false, updated: false })
+                } else {
+                    this.setState({
+                        failed: true, error_msg: datos.error,
+                        confirmEdit: false, updated: false
+                    })
                     setShowEdit(false)
                     console.log(datos.code)
                 }
@@ -197,131 +217,132 @@ class Proveedor extends Component {
 
     handleOk = (e) => {
         const { selected, setShow, reset, setShowEdit } = this.context
-       
+
         try {
             console.log(selected)
             if (selected.valid_profesion) {
-                 //
-                 let profesiones=getProfesiones(selected.email)
+                //
+                let profesiones = getProfesiones(selected.email)
 
-                if (profesiones!=""&&selected.estado=="Activa") {
+                if (profesiones != "" && selected.estado == "Activa") {
                     console.log("proveedor ya tiene las siguientes profesiones")
                     console.log(profesiones)
-                    let data={
+                    let data = {
                         "profesion": selected.profesion,
-                        "ano_experiencia":selected.ano_experiencia}
-                    
-                    
-                    MetodosAxios.crear_profesiones_proveedor(selected.email,data).then(value => {
+                        "ano_experiencia": selected.ano_experiencia
+                    }
+
+
+                    MetodosAxios.crear_profesiones_proveedor(selected.email, data).then(value => {
                         let datos = value.data;
                         if (datos) {
-                            let datadoc=`${selected.email}&${selected.profesion}|true`
-                         
+                            let datadoc = `${selected.email}&${selected.profesion}|true`
+
                             console.log(datadoc)
-                            MetodosAxios.eliminar_proveedores_pendientes(selected.email,datadoc).then(value1 => {
-                                
-                                    this.setState({ addservicio: true })
-                                   
-                                    let addservicio = {
-                                        password: datos.password,
-                                        email: datos.username
-                                    }
-                                    this.setState({ addservicio: addservicio, is_changed: true })
-                                
-                                
-                          })
+                            MetodosAxios.eliminar_proveedores_pendientes(selected.email, datadoc).then(value1 => {
+
+                                this.setState({ addservicio: true })
+
+                                let addservicio = {
+                                    password: datos.password,
+                                    email: datos.username
+                                }
+                                this.setState({ addservicio: addservicio, is_changed: true })
+
+
+                            })
                         } else {
                             this.setState({ faileservicio: true, error_msg: datos.error })
-                            
+
                             console.log(datos.code)
                         }
                     })
-                   
-                }else{
-              //
-                let data = selected;
-                MetodosAxios.register_proveedor(data).then(value => {
-                    let datos = value.data;
-                    if (datos.success) {
-                        this.setState({ created: true })
-                     
-                        let creado = {
-                            password: datos.password,
-                            email: datos.username
-                        }
-                        this.setState({ creado: creado, is_changed: true })
-                    } else {
-                        this.setState({ failed: true, error_msg: datos.error })
-                        
-                        console.log(datos.code)
-                    }
-                })
 
-            }
-            setShow(false)
-            setShowEdit(false)
-        } else {
-            this.setState({ failed: true, error_msg: 'La profesion no está registrada' })
-        } reset()
+                } else {
+                    //
+                    let data = selected;
+                    MetodosAxios.register_proveedor(data).then(value => {
+                        let datos = value.data;
+                        if (datos.success) {
+                            this.setState({ created: true })
+
+                            let creado = {
+                                password: datos.password,
+                                email: datos.username
+                            }
+                            this.setState({ creado: creado, is_changed: true })
+                        } else {
+                            this.setState({ failed: true, error_msg: datos.error })
+
+                            console.log(datos.code)
+                        }
+                    })
+
+                }
+                setShow(false)
+                setShowEdit(false)
+            } else {
+                this.setState({ failed: true, error_msg: 'La profesion no está registrada' })
+            } reset()
         } catch (e) {
             this.setState({ failed: true })
             setShow(false)
             reset()
         }
-    
+
     };
 
     handleCancel = e => {
-        const { setShow, setShowEdit, setSelected,setEdit, reset } = this.context
-            setShow(false)
-            setShowEdit(false)
-            setSelected({})
-            setEdit({})
-            
-            this.setState({
-                created: false,
-                addservicio:false,
-                faileservicio:false,
-                failed: false,
-                sent: false,
-                confirmEdit: false,
-                updated: false,
-                is_changed:true,
-                rechazo:false,
-                showSolicitudes:false
-            });
-        
-            reset()
-        
+        const { setShow, setShowEdit, setSelected, setEdit, reset } = this.context
+        setShow(false)
+        setShowEdit(false)
+        setSelected({})
+        setEdit({})
+
+        this.setState({
+            created: false,
+            addservicio: false,
+            faileservicio: false,
+            failed: false,
+            sent: false,
+            confirmEdit: false,
+            updated: false,
+            is_changed: true,
+            rechazo: false,
+            showSolicitudes: false
+        });
+
+        reset()
+
     }
 
     handleRechazo = e => {
-        const { setShow, setShowEdit, setSelected,selected, setEdit, reset } = this.context
-        let datadoc=`${selected.email}&${selected.profesion}|false`
-        MetodosAxios.eliminar_proveedores_pendientes(selected.email,datadoc).then(value => {
+        const { setShow, setShowEdit, setSelected, selected, setEdit, reset } = this.context
+        let datadoc = `${selected.email}&${selected.profesion}|false`
+        MetodosAxios.eliminar_proveedores_pendientes(selected.email, datadoc).then(value => {
             setShow(false)
             setShowEdit(false)
             setSelected({})
             setEdit({})
-            
+
             this.setState({
                 created: false,
-                addservicio:false,
-                faileservicio:false,
+                addservicio: false,
+                faileservicio: false,
                 failed: false,
                 sent: false,
                 confirmEdit: false,
                 updated: false,
-                rechazo:true,
+                rechazo: true,
             });
-        
+
             reset()
-    })
-    reset()
-        
+        })
+        reset()
+
     }
 
-    handleAceptAddServicio = (e) => { 
+    handleAceptAddServicio = (e) => {
         this.setState({ addservicio: false })
 
     }
@@ -363,8 +384,8 @@ class Proveedor extends Component {
 
         this.setState({
             created: false,
-            addservicio:false,
-            faileservicio:false,
+            addservicio: false,
+            faileservicio: false,
             failed: false,
             sent: false,
             confirmEdit: false,
@@ -449,7 +470,7 @@ class Proveedor extends Component {
         console.log(categoria.nombre)
         this.setModalVisibleEdit(true)*/
         this.setState({
-            showSolicitudes:true
+            showSolicitudes: true
         })
         console.log(proveedor)
     }
@@ -473,8 +494,8 @@ class Proveedor extends Component {
                             <TabPane tab="PROVEEDORES" key="proveedores" >
                                 <Proveedores
                                     proveedores={this.state.proveedores}
-                                    loading={this.state.loading_proveedores} 
-                                    proveedorSeleccionado={this.mostrarSolicitudes}/>
+                                    loading={this.state.loading_proveedores}
+                                    proveedorSeleccionado={this.mostrarSolicitudes} />
                             </TabPane>
                             <TabPane tab="PENDIENTES" key="pendientes">
                                 <Pendientes
@@ -496,10 +517,12 @@ class Proveedor extends Component {
                             <div className="modal-container">
                                 <div className="modal-title">
                                     <h3 className="title">Perfil de proveedor pendiente</h3>
-{}
+                                    { }
                                 </div>
                                 <div>
-                                    <h1>tabla</h1>
+                                    <Table columns={columnsSol}
+                                        dataSource={solicitudes}
+                                    />
                                 </div>
                             </div>
 
