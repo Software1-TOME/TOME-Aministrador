@@ -268,7 +268,7 @@ static eliminar_proveedores_pendientes = (user,data) => {
 
 
   static obtener_grupos=()=>{
-    return MetodosAxios.instanceAxios.get('/grupos/')
+    return MetodosAxios.instanceAxios.get('/grupos/');
   }
 
   /*
@@ -279,7 +279,7 @@ static eliminar_proveedores_pendientes = (user,data) => {
   */
 
   static crear_promocion=(data)=>{
-    return MetodosAxios.instanceAxios.post('/promociones/', data)
+    return MetodosAxios.instanceAxios.post('/promociones/', data);
   }
 
 
@@ -291,7 +291,7 @@ static eliminar_proveedores_pendientes = (user,data) => {
   */
 
  static actualizar_promocion=(data)=>{
-  return MetodosAxios.instanceAxios.put('/promociones/', data)
+  return MetodosAxios.instanceAxios.put('/promociones/', data);
 }
 
   /*
@@ -302,6 +302,35 @@ static eliminar_proveedores_pendientes = (user,data) => {
   */
 
   static obtener_ctgprom =(promCode)=>{
-    return MetodosAxios.instanceAxios.get(`/promcategorias/${promCode}`)
+    return MetodosAxios.instanceAxios.get(`/promcategorias/${promCode}`);
+  }
+
+    /*
+    obtener_pagos_efectivo
+    autor: Kelly
+    descripccion: Retorna todas los pagos en efectivo
+    parametros: none
+  */
+
+  static obtener_pagos_efectivo =()=>{
+    return MetodosAxios.instanceAxios.get('/pago_efectivos/');
+  }
+  /*
+    obtener_pagos_tarjeta
+    autor: Kelly
+    descripccion: Retorna todas los pagos con tarjeta
+    parametros: none
+  */
+
+  static obtener_pagos_tarjeta =()=>{
+    return MetodosAxios.instanceAxios.get('/pago_tarjetas/');
+  }
+
+  static obtener_pago_solE=(pago_ID)=>{
+    return MetodosAxios.instanceAxios.get(`/pagosol_efectivo/${pago_ID}`);
+  }
+
+  static obtener_pago_solT=(pago_ID)=>{
+    return MetodosAxios.instanceAxios.get(`/pagosol_tarjeta/${pago_ID}`);
   }
 }

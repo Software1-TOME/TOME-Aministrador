@@ -42,10 +42,7 @@ export function validateDate(id, value) {
             errorLabel.textContent = "Fecha mayor a hoy";
             return false;
         }
-
     }
-
-
 }
 
 
