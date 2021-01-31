@@ -51,15 +51,53 @@
     width: 100px;
     text-align: end;
 }
+.name-item-ctg{
+    color: gray;
+    width: 150px;
+    text-align: end;
+    margin-right: 10px;
+}
+
+.ctg-name{
+    color: #052434;
+    font-style: italic;
+    width: 150px;
+    text-align: end;
+    font-size: small;
+}
 
 .columns{
     display: grid;
     grid-template-columns: auto auto;
+    padding-left: 10px;
+    
+}
+
+.columns-pay{
+    display: grid;
+    grid-template-columns: 80% 10px;
     padding: 10px;
 }
 
 .item-sol{
     margin-bottom: 10px;
+}
+.item-pay-ctg{
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.ctg-name{
+    margin-top: 0px;
+    margin-right: 10px;
+    width: 150px;
+}
+
+.sub-item-ctg{
+    display: flex;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    height: 20px;
 }
 
 .item-center-pay{
@@ -100,6 +138,14 @@
     padding: 0px;
     color: #052434;
 }
+.ctg-value{
+    margin-left: 10px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+    color: #052434;
+    font-style: italic;
+}
 
 .border-detail{
     border-bottom: 1px solid #2282B4;
@@ -113,4 +159,10 @@
 .bold-name{
     font-weight: bolder;
     color: #052434;
+}
+
+
+.table-item-cgt{
+    margin-bottom: 40px;
+    padding: 10px;
 }

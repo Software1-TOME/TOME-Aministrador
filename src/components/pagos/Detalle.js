@@ -1,9 +1,5 @@
 import React, { useState, } from "react";
-import { Input, Table, Button, Modal, Select } from 'antd';
-import MetodosAxios from '../../requirements/MetodosAxios';
-import { formatTimeStr } from "antd/lib/statistic/utils";
 import './pagos.css'
-import { get } from "request";
 
 const Detalle = (props) => {
     const { pago_info } = props;
