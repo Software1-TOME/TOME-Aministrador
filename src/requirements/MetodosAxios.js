@@ -333,4 +333,8 @@ static eliminar_proveedores_pendientes = (user,data) => {
   static obtener_pago_solT=(pago_ID)=>{
     return MetodosAxios.instanceAxios.get(`/pagosol_tarjeta/${pago_ID}`);
   }
+
+  static enviar_alerta =(correo,asunto,texto)=>{
+    return MetodosAxios.instanceAxios.get(`/enviaralerta/${correo}/${asunto}/${texto}`)
+  }
 }
