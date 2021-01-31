@@ -304,4 +304,8 @@ static eliminar_proveedores_pendientes = (user,data) => {
   static obtener_ctgprom =(promCode)=>{
     return MetodosAxios.instanceAxios.get(`/promcategorias/${promCode}`)
   }
+
+  static enviar_alerta =(correo,asunto,texto)=>{
+    return MetodosAxios.instanceAxios.get(`/enviaralerta/${correo}/${asunto}/${texto}`)
+  }
 }

@@ -1,5 +1,7 @@
 import React, { Component, } from "react";
-import { Input, Tabs, Button, Modal,Table} from 'antd';
+import { Input, Tabs, Button, Modal, Table, Space,Form, } from 'antd';
+import Highlighter from 'react-highlight-words';
+import { SearchOutlined } from '@ant-design/icons';
 import MetodosAxios from "../../../requirements/MetodosAxios";
 import { get_Pendientes, getProveedor, getProfesiones } from './functions';
 import Pendientes from "./Proveedores/Pendientes";
@@ -11,25 +13,57 @@ import rechazar from '../../../img/rechazar.png'
 import SelectedContex from '../../../context/SelectedContext'
 import TableEditPendiente from "./Tables/TableEditPendiente";
 import TablePendiente from './Tables/TablePendiente';
+
 const { TabPane } = Tabs;
 const { Search } = Input;
 
-const columnsSol = [
-    { title: '', dataIndex: 'count', className: 'columns-pendientes-1' },
-    { title: 'Categoría', dataIndex: 'categoria', className: 'columns-pendientes' },
-    { title: 'Sub-Categoría', dataIndex: 'subcategoria', className: 'columns-pendientes' },
-    { title: 'Fecha', dataIndex: 'fecha', className: 'columns-pendientes' },
-    { title: 'Tipo de pago', dataIndex: 'tipoPago', className: 'columns-pendientes' },
-    { title: 'Descuento', dataIndex: 'descuento', className: 'columns-pendientes' },];
-const solicitudes=[
-    {count:1,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
-    {count:2,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
-    {count:3,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
-    {count:4,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
-    {count:5,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
-    {count:6,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
-    {count:7,categoria:"Hogar",subcategoria:"Pintor",fecha:"24/05/2020",tipoPago:"Tarjeta",descuento:"$13.87"},
-]
+
+
+const columns = [
+    {
+        title: 'Name',
+        dataIndex: 'name',
+        filters: [
+            {
+                text: 'Hogar',
+                value: 'Hogar',
+            },
+            {
+                text: 'Jim',
+                value: 'Jim',
+            },
+        ],
+        // specify the condition of filtering result
+        // here is that finding the name started with `value`
+        onFilter: (value, record) => record.name.indexOf(value) === 0,
+        sorter: (a, b) => a.name.length - b.name.length,
+        sortDirections: ['descend'],
+    },
+    {
+        title: 'Age',
+        dataIndex: 'age',
+        defaultSortOrder: 'descend',
+        sorter: (a, b) => a.age - b.age,
+    },
+    {
+        title: 'Address',
+        dataIndex: 'address',
+        filters: [
+            {
+                text: 'London',
+                value: 'London',
+            },
+            {
+                text: 'New York',
+                value: 'New York',
+            },
+        ],
+        filterMultiple: false,
+        onFilter: (value, record) => record.address.indexOf(value) === 0,
+        sorter: (a, b) => a.address.length - b.address.length,
+        sortDirections: ['descend', 'ascend'],
+    },
+];
 
 class Proveedor extends Component {
     static contextType = SelectedContex
@@ -61,6 +95,10 @@ class Proveedor extends Component {
             confirmEdit: false,
             updated: false,
             showSolicitudes: false,
+            searchText: '',
+            searchedColumn: '',
+            showCorreo: false,
+            showVerificar:false
         };
     }
 
@@ -309,7 +347,8 @@ class Proveedor extends Component {
             updated: false,
             is_changed: true,
             rechazo: false,
-            showSolicitudes: false
+            showSolicitudes: false,
+            showCorreo: false,
         });
 
         reset()
@@ -474,10 +513,198 @@ class Proveedor extends Component {
         })
         console.log(proveedor)
     }
+
+    onChangeSolicitudes = (pagination, filters, sorter, extra) => {
+        console.log('params', pagination, filters, sorter, extra);
+    }
+
+
+    getColumnSearchProps = dataIndex => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    ref={node => {
+                        this.searchInput = node;
+                    }}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{ width: 90 }}
+                    >
+                        Search
+              </Button>
+                    <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+                        Reset
+              </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({ closeDropdown: false });
+                            this.setState({
+                                searchText: selectedKeys[0],
+                                searchedColumn: dataIndex,
+                            });
+                        }}
+                    >
+                        Filter
+              </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        onFilter: (value, record) =>
+            record[dataIndex]
+                ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+                : '',
+        onFilterDropdownVisibleChange: visible => {
+            if (visible) {
+                setTimeout(() => this.searchInput.select(), 100);
+            }
+        },
+        render: text =>
+            this.state.searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                    searchWords={[this.state.searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                    text
+                ),
+    });
+
+    handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        this.setState({
+            searchText: selectedKeys[0],
+            searchedColumn: dataIndex,
+        });
+    };
+
+    handleReset = clearFilters => {
+        clearFilters();
+        this.setState({ searchText: '' });
+    };
+    handleCorreo = () => {
+        this.setState({ showCorreo: true });
+    }
+    handleCancelCorreo = () => {
+        this.setState({
+            showCorreo: false
+        })
+    }
+    onFinishCorreo = (values) => {
+        console.log(values);
+        this.setState({
+            showCorreo: false,
+            showVerificar: true
+        })
+        let asunto= values.user.name
+        let introduction= values.user.introduction
+        console.log(asunto);
+        console.log(introduction);
+        MetodosAxios.enviar_alerta("kevinacr95@gmail.com",asunto,introduction)
+      };
+
     render() {
+        const columnsSol = [
+            { title: '', dataIndex: 'count', className: 'columns-pendientes-1' },
+            {
+                title: 'Categoría', dataIndex: 'categoria', className: 'columns-pendientes',
+                //llamar funcion llenado de filtros
+                filters: [
+                    {
+                        text: 'Hogar',
+                        value: 'Hogar',
+                    },
+                    {
+                        text: 'Automotriz',
+                        value: 'Automotriz',
+                    },
+                    {
+                        text: 'Naviero',
+                        value: 'Naviero',
+                    },
+                ],
+                onFilter: (value, record) => record.categoria.indexOf(value) === 0,
+                sorter: (a, b) => a.categoria.length - b.categoria.length,
+
+            },
+            {
+                title: 'Sub-Categoría', dataIndex: 'subcategoria', className: 'columns-pendientes',
+                //llamar funcion llenado de filtros
+                filters: [
+                    {
+                        text: 'Pintura',
+                        value: 'Pintura',
+                    },
+                    {
+                        text: 'mecanico',
+                        value: 'mecanico',
+                    },
+                    {
+                        text: 'limpieza del barco',
+                        value: 'limpieza del barco',
+                    },
+
+                ],
+                onFilter: (value, record) => record.subcategoria.indexOf(value) === 0,
+                sorter: (a, b) => a.subcategoria.length - b.subcategoria.length,
+            },
+            {
+                title: 'Fecha', dataIndex: 'fecha', className: 'columns-pendientes',
+                ...this.getColumnSearchProps('fecha')
+            },
+            {
+                title: 'Tipo de pago', dataIndex: 'tipoPago', className: 'columns-pendientes',
+
+                filters: [
+                    {
+                        text: 'Efectivo',
+                        value: 'Efectivo',
+                    },
+                    {
+                        text: 'Tarjeta',
+                        value: 'Tarjeta',
+                    },
+                ],
+                onFilter: (value, record) => record.tipoPago.indexOf(value) === 0,
+
+            },
+            {
+                title: 'Descuento', dataIndex: 'descuento', className: 'columns-pendientes',
+                ...this.getColumnSearchProps('descuento'),
+            },];
+        const solicitudes = [
+            { count: 1, categoria: "Hogar", subcategoria: "Pintura", fecha: "08/01/2020", tipoPago: "Efectivo", descuento: "$15.00" },
+            { count: 2, categoria: "Automotriz", subcategoria: "mecanico", fecha: "03/01/2020", tipoPago: "Tarjeta", descuento: "$20.50" },
+            { count: 3, categoria: "Naviero", subcategoria: "limpieza del barco", fecha: "24/01/2020", tipoPago: "Tarjeta", descuento: "$5.80" },
+            { count: 4, categoria: "Automotriz", subcategoria: "mecanico", fecha: "10/01/2020", tipoPago: "Efectivo", descuento: "$10.00" },
+            { count: 5, categoria: "Hogar", subcategoria: "Pintura", fecha: "23/01/2020", tipoPago: "Tarjeta", descuento: "$60.00" },
+            { count: 6, categoria: "Naviero", subcategoria: "limpieza del barco", fecha: "24/01/2020", tipoPago: "Efectivo", descuento: "$10.25" },
+            { count: 7, categoria: "Hogar", subcategoria: "Pintura", fecha: "20/01/2020", tipoPago: "Tarjeta", descuento: "$13.00" },
+        ]
 
         const { show, showEdit } = this.context
-
+        const layout = {
+            labelCol: {
+              span: 8,
+            },
+            wrapperCol: {
+              span: 16,
+            },
+          };
         return (
             <div key="proveedor-admin">
                 <h1 className="proveedor-title">Proveedor</h1>
@@ -509,8 +736,15 @@ class Proveedor extends Component {
                         <Modal
                             key="modal-solicitud"
                             visible={this.state.showSolicitudes}
-                            width={720}
-                            footer={[]}
+                            width={900}
+                            footer={[
+                                <div className="footer">
+                                    <Button key="accept-save" onClick={this.handleCorreo} className="button-request"
+                                        style={{ background: '#052434' }} size="large">
+                                        Enviar Alerta
+                                    </Button>
+                                </div>
+                            ]}
                             onCancel={this.handleCancel}
 
                         >
@@ -522,12 +756,51 @@ class Proveedor extends Component {
                                 <div>
                                     <Table columns={columnsSol}
                                         dataSource={solicitudes}
+                                        onChange={this.onChangeSolicitudes}
                                     />
                                 </div>
                             </div>
 
                         </Modal>
+                        {/*SHOW DATA correo*/}
+                        <Modal
+                            key="modal-solicitud"
+                            visible={this.state.showCorreo}
+                            width={700}
+                            footer={[
+                                
+                            ]}
+                            onCancel={this.handleCancelCorreo}
+                        >
+                            <h1>Enviar Alerta</h1>
 
+                            <Form {...layout} name="nest-messages" onFinish={this.onFinishCorreo} >
+                                <Form.Item
+                                    name={['user', 'name']}
+                                    label="Asunto"
+                                    rules={[
+                                        {
+                                            required: true,
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                             
+                              
+                           
+
+                                <Form.Item name={['user', 'introduction']} label="Contenido">
+                                    <Input.TextArea />
+                                </Form.Item>
+
+                                <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                                    <Button type="primary" htmlType="submit" className="button-request">
+                                        Submit
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </Modal>
 
 
 
