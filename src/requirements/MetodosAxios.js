@@ -255,6 +255,10 @@ static eliminar_proveedores_pendientes = (user,data) => {
   return MetodosAxios.instanceAxios.delete(`/proveedores_pendientes/${user}/${data}`)
 }
 
+static update_pendiente_documento = ( data) => {
+  return MetodosAxios.instanceAxios.put(`/proveedores_pendientes/`, data)
+};
+
   /*
     obtener_promociones
     autor: Kelly

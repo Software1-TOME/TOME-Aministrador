@@ -12,13 +12,13 @@ const TablePendiente = (props) => {
         if (!proveedor) return ""
         return proveedor.nombres + " " + proveedor.apellidos;
     }
-    
+     
     const getDocuments = (proveedor) => {
         let documents = proveedor.document;
         try{
             return documents.map((doc, i) => {
                 return (
-                    !doc.estado &&doc.descripcion.split("&")[1]==selected.profesion&&
+                    !doc.estado &&doc.descripcion.split("&")[1].toUpperCase()==selected.profesion.toUpperCase()&&
                     <div className="document-container" key={"pendiente-doc-proveedor-"+proveedor.id}>
                         <a href={API_URL + doc.documento} target="_blank" className="document-link" rel="noreferrer">
                             <Button key="accept" onClick={() => { }}

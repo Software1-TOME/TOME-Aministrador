@@ -32,6 +32,7 @@ const TableEditPendiente = (props) => {
         try {
             return documents.map((doc, i) => {
                 return (
+                    !doc.estado &&doc.descripcion.split("&")[1].toUpperCase()==selected.profesion.toUpperCase()&&
                     <div className="document-container" key={"edit-docproveedor-" + proveedor.id}>
                         <a href={API_URL + doc.documento} target="_blank" className="document-link" rel="noreferrer">
                             <Button key="accept" onClick={() => { }}

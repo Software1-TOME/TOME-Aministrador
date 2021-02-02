@@ -192,6 +192,7 @@ class Proveedor extends Component {
 
     }
 
+
     handleFill = () => {
         let buttons = document.getElementsByClassName('ant-btn ant-btn-link')
         for (let btn of buttons) {
@@ -220,25 +221,35 @@ class Proveedor extends Component {
         const { selected, setShow, setShowEdit, reset } = this.context
         try {
             let data = this.getAllchangedValued(selected)
+            let datadoc ={
+                descripcion: `${selected.email}&${selected.profesion}`,
+                profesion: `${selected.email}&${data.profesion}`
+            }
             const url = 'https://tomesoft1.pythonanywhere.com/update_pendiente/'
             MetodosAxios.actualizar_pendiente(url, data).then(value => {
                 let datos = value.data;
                 if (datos.success) {
-                    this.setState({
-                        is_changed: true,
-                        confirmEdit: false, updated: true,
-                        msg: "Se ha actualizado la informacion"
+                    MetodosAxios.update_pendiente_documento( datadoc).then(value => {
+                        let datos = value.data;
+                        if (datos.success) {
+                            this.setState({
+                                is_changed: true,
+                                confirmEdit: false, updated: true,
+                                msg: "Se ha actualizado la informacion"
+                            })
+                            
+                            setShow(false)
+                            setShowEdit(false)
+                        }else {
+                            this.setState({
+                                failed: true, error_msg: datos.error,
+                                confirmEdit: false, updated: false
+                            })
+                            setShowEdit(false)
+                            console.log(datos.code)
+                        }
                     })
-                    setShow(false)
-                    setShowEdit(false)
-                } else {
-                    this.setState({
-                        failed: true, error_msg: datos.error,
-                        confirmEdit: false, updated: false
-                    })
-                    setShowEdit(false)
-                    console.log(datos.code)
-                }
+                } 
 
             })
             reset()
