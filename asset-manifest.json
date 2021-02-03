@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/TOME-Aministrador/static/css/main.f1b2b137.chunk.css",
-    "main.js": "/TOME-Aministrador/static/js/main.21380740.chunk.js",
-    "main.js.map": "/TOME-Aministrador/static/js/main.21380740.chunk.js.map",
+    "main.js": "/TOME-Aministrador/static/js/main.c2b77eb3.chunk.js",
+    "main.js.map": "/TOME-Aministrador/static/js/main.c2b77eb3.chunk.js.map",
     "runtime-main.js": "/TOME-Aministrador/static/js/runtime-main.b10974a9.js",
     "runtime-main.js.map": "/TOME-Aministrador/static/js/runtime-main.b10974a9.js.map",
     "static/css/2.8ddd9e3d.chunk.css": "/TOME-Aministrador/static/css/2.8ddd9e3d.chunk.css",
@@ -28,6 +28,6 @@
     "static/css/2.8ddd9e3d.chunk.css",
     "static/js/2.48dc741c.chunk.js",
     "static/css/main.f1b2b137.chunk.css",
-    "static/js/main.21380740.chunk.js"
+    "static/js/main.c2b77eb3.chunk.js"
   ]
 }
