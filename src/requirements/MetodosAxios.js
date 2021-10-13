@@ -131,6 +131,18 @@ export default class MetodosAxios {
   }
 
   /*
+    politics
+    autor: Hector
+    descripcion: Obtiene las politicas
+    parametros:identifier de la politica
+  */
+
+  static politics(identifier) {
+    let url = '/politicas/'
+    return MetodosAxios.instanceAxios.post(url, identifier)
+  }
+
+  /*
     obtener_profesiones
     autor: Kelly
     descripccion: Obtiene todas las profesiones de los proveedores
