@@ -144,7 +144,7 @@ export default class Politicas extends Component {
 
       <div> 
        <div>
-            <h1 className="proveedor-title">Pagos</h1>
+            <h1 className="proveedor-title">Terminos y Condiciones</h1>
             <div>
                 <div style={{ marginBottom: 16 }}></div>
             </div>
@@ -160,7 +160,7 @@ export default class Politicas extends Component {
                         />
                     </div>}
                         type="card" size="large" >
-                        <TabPane tab="CATEGORIAS" key="1">
+                        <TabPane tab="" key="1">
                            {this.formatearText(this.state.textInput)}
                         </TabPane>
                     
