@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/TOME-Aministrador/static/css/main.f1b2b137.chunk.css",
-    "main.js": "/TOME-Aministrador/static/js/main.c2b77eb3.chunk.js",
-    "main.js.map": "/TOME-Aministrador/static/js/main.c2b77eb3.chunk.js.map",
-    "runtime-main.js": "/TOME-Aministrador/static/js/runtime-main.b10974a9.js",
-    "runtime-main.js.map": "/TOME-Aministrador/static/js/runtime-main.b10974a9.js.map",
+    "main.css": "/TOME-Aministrador/static/css/main.ca0a889c.chunk.css",
+    "main.js": "/TOME-Aministrador/static/js/main.13ba17d2.chunk.js",
+    "main.js.map": "/TOME-Aministrador/static/js/main.13ba17d2.chunk.js.map",
+    "runtime-main.js": "/TOME-Aministrador/static/js/runtime-main.8ee25378.js",
+    "runtime-main.js.map": "/TOME-Aministrador/static/js/runtime-main.8ee25378.js.map",
     "static/css/2.8ddd9e3d.chunk.css": "/TOME-Aministrador/static/css/2.8ddd9e3d.chunk.css",
-    "static/js/2.48dc741c.chunk.js": "/TOME-Aministrador/static/js/2.48dc741c.chunk.js",
-    "static/js/2.48dc741c.chunk.js.map": "/TOME-Aministrador/static/js/2.48dc741c.chunk.js.map",
-    "static/js/3.c0dde066.chunk.js": "/TOME-Aministrador/static/js/3.c0dde066.chunk.js",
-    "static/js/3.c0dde066.chunk.js.map": "/TOME-Aministrador/static/js/3.c0dde066.chunk.js.map",
+    "static/js/2.6bf5b651.chunk.js": "/TOME-Aministrador/static/js/2.6bf5b651.chunk.js",
+    "static/js/2.6bf5b651.chunk.js.map": "/TOME-Aministrador/static/js/2.6bf5b651.chunk.js.map",
+    "static/js/3.afa62deb.chunk.js": "/TOME-Aministrador/static/js/3.afa62deb.chunk.js",
+    "static/js/3.afa62deb.chunk.js.map": "/TOME-Aministrador/static/js/3.afa62deb.chunk.js.map",
     "index.html": "/TOME-Aministrador/index.html",
     "static/css/2.8ddd9e3d.chunk.css.map": "/TOME-Aministrador/static/css/2.8ddd9e3d.chunk.css.map",
-    "static/css/main.f1b2b137.chunk.css.map": "/TOME-Aministrador/static/css/main.f1b2b137.chunk.css.map",
-    "static/js/2.48dc741c.chunk.js.LICENSE.txt": "/TOME-Aministrador/static/js/2.48dc741c.chunk.js.LICENSE.txt",
+    "static/css/main.ca0a889c.chunk.css.map": "/TOME-Aministrador/static/css/main.ca0a889c.chunk.css.map",
+    "static/js/2.6bf5b651.chunk.js.LICENSE.txt": "/TOME-Aministrador/static/js/2.6bf5b651.chunk.js.LICENSE.txt",
     "static/media/aceptar.68dced2a.png": "/TOME-Aministrador/static/media/aceptar.68dced2a.png",
     "static/media/admin.85bdf045.png": "/TOME-Aministrador/static/media/admin.85bdf045.png",
     "static/media/agregar.66fc0a88.png": "/TOME-Aministrador/static/media/agregar.66fc0a88.png",
@@ -24,10 +24,10 @@
     "static/media/tome.229c6f40.jpg": "/TOME-Aministrador/static/media/tome.229c6f40.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.b10974a9.js",
+    "static/js/runtime-main.8ee25378.js",
     "static/css/2.8ddd9e3d.chunk.css",
-    "static/js/2.48dc741c.chunk.js",
-    "static/css/main.f1b2b137.chunk.css",
-    "static/js/main.c2b77eb3.chunk.js"
+    "static/js/2.6bf5b651.chunk.js",
+    "static/css/main.ca0a889c.chunk.css",
+    "static/js/main.13ba17d2.chunk.js"
   ]
 }
