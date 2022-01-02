@@ -144,7 +144,7 @@ export default class Politicas extends Component {
 
       <div> 
        <div>
-            <h1 className="proveedor-title">Terminos y Condiciones</h1>
+            <h1 className="proveedor-title">Términos y Condiciones</h1>
             <div>
                 <div style={{ marginBottom: 16 }}></div>
             </div>
@@ -160,7 +160,7 @@ export default class Politicas extends Component {
                         />
                     </div>}
                         type="card" size="large" >
-                        <TabPane tab="" key="1">
+                        <TabPane tab=" Términos y Condiciones" key="1">
                            {this.formatearText(this.state.textInput)}
                         </TabPane>
                     
@@ -171,7 +171,7 @@ export default class Politicas extends Component {
         </div>
         <Modal
                     className="modal"
-                    title="Agregar Categoría"
+                    title="Editar Términos y Condiciones"
                     centered
                     visible={this.state.showModal}
                     okText="Guardar"
@@ -181,7 +181,7 @@ export default class Politicas extends Component {
                     onCancel={() => this.CerrarAgregar()}
                 >
                 <div>
-                <h1>Términos y Condiciones</h1>
+                
                 <Mentions
                   style={{ width: '100%',height:'600px' }}
                   autoSize={{ minRows: '8',maxRows:'25' }}

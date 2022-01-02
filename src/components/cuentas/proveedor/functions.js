@@ -77,38 +77,36 @@ export async function getProveedor(proveedor, count) {
 
 
 export async function get_Pendientes(pendiente, count) {
-    let proveedor = pendiente.proveedor
-    let date = getDate(proveedor.user_datos.fecha_creacion)
+    console.log("pendiente", pendiente)
+    let proveedor = pendiente
+    //let date = getDate(proveedor.user_datos.fecha_creacion)
     let licencia = "No"
     pendiente.estado ? licencia = "Activa" : licencia = "No Activa"
-    let fullName = proveedor.user_datos.nombres + " " + proveedor.user_datos.apellidos;
+    let fullName = proveedor.nombres + " " + proveedor.apellidos;
     let is_valid_profesion = await validateProfesion(pendiente.profesion)
     let element = {
         count: count,
         key: proveedor.id,
         proveedor_id: proveedor.id,
         pendiente_id: pendiente.id,
-        user_datos: proveedor.user_datos.id,
         email: pendiente.email,
-        tipo_user: proveedor.user_datos.tipo,
-        nombres: proveedor.user_datos.nombres,
-        apellidos: proveedor.user_datos.apellidos,
+        nombres: proveedor.nombres,
+        apellidos: proveedor.apellidos,
         fullName: fullName,
-        ciudad: proveedor.user_datos.ciudad,
-        cedula: proveedor.user_datos.cedula,
-        telefono: proveedor.user_datos.telefono,
-        genero: proveedor.user_datos.genero,
-        foto: proveedor.user_datos.foto,
-        descripcion: proveedor.descripcion,
-        document: proveedor.document,  //lista
-        estado: licencia,
-        fecha_creacion: date,
+        ciudad: proveedor.ciudad,
+        cedula: proveedor.cedula,
+        telefono: proveedor.telefono,
+        //foto: proveedor.user_datos.foto,
+        //descripcion: proveedor.descripcion,
+        document: proveedor.planilla_servicios,  //lista
+        estado: proveedor.estado,
+        //fecha_creacion: date,
         profesion: pendiente.profesion,
         ano_experiencia: pendiente.ano_experiencia,
         numero_cuenta: pendiente.numero_cuenta,
         banco: pendiente.banco,
         tipo_cuenta: pendiente.tipo_cuenta,
-        valid_profesion: is_valid_profesion,
+        //valid_profesion: is_valid_profesion,
         is_changed: false,
         tipo_wanted: 'Proveedor',
     }

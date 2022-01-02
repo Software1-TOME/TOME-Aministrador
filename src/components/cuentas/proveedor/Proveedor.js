@@ -133,6 +133,7 @@ class Proveedor extends Component {
         this.setState({ loading_pendientes: true })
         let pendientes = []
         let value = await MetodosAxios.obtener_proveedores_pendientes();
+        console.log("value",value)
         let count = 1;
         for (let pendiente of value.data) {
             let _pendiente = await get_Pendientes(pendiente, count)
